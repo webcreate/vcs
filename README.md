@@ -30,4 +30,4 @@ executable or use the installer.
 Documenation
 ------------
 
-Full documentation is available in [docs](docs/).
+Full documentation is available in [docs/](docs/).

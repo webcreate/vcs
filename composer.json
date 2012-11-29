@@ -1,6 +1,6 @@
 {
     "name": "webcreate/vcs",
-    "description": "Version control abstraction library",
+    "description": "PHP interface for version control systems",
     "authors": [
         {
             "name": "Jeroen Fiege",
