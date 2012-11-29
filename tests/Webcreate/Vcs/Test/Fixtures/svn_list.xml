@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<lists>
+<list
+   path="svn://vcs.wbcrte.net/webcreate_deploy">
+<entry
+   kind="dir">
+<name>branches</name>
+<commit
+   revision="1">
+<author>jeroen</author>
+<date>2012-10-22T20:26:32.210578Z</date>
+</commit>
+</entry>
+<entry
+   kind="dir">
+<name>tags</name>
+<commit
+   revision="1">
+<author>jeroen</author>
+<date>2012-10-22T20:26:32.210578Z</date>
+</commit>
+</entry>
+<entry
+   kind="dir">
+<name>trunk</name>
+<commit
+   revision="3">
+<author>jeroen</author>
+<date>2012-10-25T19:19:54.279331Z</date>
+</commit>
+</entry>
+</list>
+</lists>

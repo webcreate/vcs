@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<diff>
+<paths>
+<path
+   props="none"
+   kind="file"
+   item="added">svn://vcs.wbcrte.net/fieg_repos/trunk/include/classTextile.php</path>
+<path
+   props="none"
+   kind="file"
+   item="modified">svn://vcs.wbcrte.net/fieg_repos/trunk/include/global_target.inc.php</path>
+<path
+   props="none"
+   kind="file"
+   item="modified">svn://vcs.wbcrte.net/fieg_repos/trunk/include/data.inc.php</path>
+<path
+   props="none"
+   kind="file"
+   item="modified">svn://vcs.wbcrte.net/fieg_repos/trunk/script/save.php</path>
+<path
+   props="none"
+   kind="file"
+   item="modified">svn://vcs.wbcrte.net/fieg_repos/trunk/.htaccess</path>
+<path
+   props="none"
+   kind="file"
+   item="modified">svn://vcs.wbcrte.net/fieg_repos/trunk/template/project.inc.php</path>
+<path
+   props="none"
+   kind="file"
+   item="modified">svn://vcs.wbcrte.net/fieg_repos/trunk/web/default.css</path>
+</paths>
+</diff>

@@ -1,0 +1,21 @@
+{
+    "name": "webcreate/vcs",
+    "description": "Version control abstraction library",
+    "authors": [
+        {
+            "name": "Jeroen Fiege",
+            "email": "jeroen@webcreate.nl"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Webcreate": ["src/", "tests/"]
+        }
+    },
+    "require": {
+        "symfony/process": ">=v2.1.2",
+        "symfony/finder": ">=v2.1.2",
+        "symfony/filesystem": ">=v2.1.2",
+        "webcreate/util": "dev-master"
+    }
+}

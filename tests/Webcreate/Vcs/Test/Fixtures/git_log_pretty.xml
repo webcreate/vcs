@@ -1,0 +1,76 @@
+<log>
+    <logentry>
+        <commit>714b57c73fd88123f09089425ae9f1c837af010e</commit>
+        <date>Mon, 13 Aug 2012 17:05:44 +0200</date>
+        <author>Jeroen Fiege</author>
+        <msg><![CDATA[removed stuff that I don't use
+]]></msg>
+    </logentry>
+    <logentry>
+        <commit>65ba27d328f7b2bf1666ffa901cf87f7deea6726</commit>
+        <date>Mon, 13 Aug 2012 09:18:24 +0200</date>
+        <author>Mathias Bynens</author>
+        <msg><![CDATA[README: Credit Chris Gerke (@cgerke)
+]]></msg>
+    </logentry>
+    <logentry>
+        <commit>0e28ec0e3b2e62f226667223ed7491ddb5b5a047</commit>
+        <date>Fri, 10 Aug 2012 11:46:37 +0200</date>
+        <author>Mathias Bynens</author>
+        <msg><![CDATA[.bash_profile: Add `~/bin` to the `$PATH`
+
+Just like before, the `$PATH` can still safely be extended by adding `~/.path`.
+]]></msg>
+    </logentry>
+    <logentry>
+        <commit>f57f9e7003727dc5c0fbe1a843734e453cf01d0a</commit>
+        <date>Wed, 8 Aug 2012 10:11:44 +0200</date>
+        <author>Mathias Bynens</author>
+        <msg><![CDATA[README: Add example `~/.path` file
+]]></msg>
+    </logentry>
+    <logentry>
+        <commit>ab64db65806920e82dbab5f19528ebe071bafaef</commit>
+        <date>Mon, 6 Aug 2012 22:51:22 +0200</date>
+        <author>Mathias Bynens</author>
+        <msg><![CDATA[.bash_profile: Source `~/.path` before and `~/.extra` after all the other dotfiles
+]]></msg>
+    </logentry>
+    <logentry>
+        <commit>5325c972a55b88b966580b5ed744c8457df494de</commit>
+        <date>Mon, 2 Jul 2012 08:20:53 +0200</date>
+        <author>Mathias Bynens</author>
+        <msg><![CDATA[README: Mention `.brew`
+
+Ref. #83.
+]]></msg>
+    </logentry>
+    <logentry>
+        <commit>9910901fbb7e4662017975087cc092ad5f8ba366</commit>
+        <date>Wed, 29 Feb 2012 12:49:51 +0000</date>
+        <author>Mathias Bynens</author>
+        <msg><![CDATA[README: Add @necolas and @tejr
+]]></msg>
+    </logentry>
+    <logentry>
+        <commit>bb49a553c8305bc9f6d111a92f26daa1310c704c</commit>
+        <date>Tue, 24 Jan 2012 08:36:16 +0100</date>
+        <author>Mathias Bynens</author>
+        <msg><![CDATA[README: Tweak the part about ~/.extra
+]]></msg>
+    </logentry>
+    <logentry>
+        <commit>c6d420b9aa7da026ef053b080ccfaf617322c972</commit>
+        <date>Mon, 23 Jan 2012 22:52:15 +0100</date>
+        <author>Mathias Bynens</author>
+        <msg><![CDATA[README: Clarify that it doesn’t matter where the repository is cloned, and document ~/.extra
+]]></msg>
+    </logentry>
+    <logentry>
+        <commit>f62dfea69705ce734d0d8cc8af6c072a0b06fffb</commit>
+        <date>Mon, 2 Jan 2012 16:35:05 +0100</date>
+        <author>Mathias Bynens</author>
+        <msg><![CDATA[README: List files while untarring
+]]></msg>
+    </logentry>
+</log>
