@@ -61,14 +61,16 @@ class GitTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue(array($commit = new Commit('cf52a6c', new \DateTime(), 'jeroen'))))
         ;
 
+        $tmpdir = $this->tmpdir;
+
         $this->cli
             ->expects($this->once())
             ->method('execute')
             ->with(sprintf('%s clone -b \'%s\' \'%s\' \'%s\'', $this->bin, 'master', $this->url, $this->tmpdir))
-            ->will($this->returnCallback(function() {
+            ->will($this->returnCallback(function() use ($tmpdir) {
                 $filesystem = new Filesystem();
-                $filesystem->mkdir($this->tmpdir);
-                $filesystem->mirror(__DIR__ . '/Test/Fixtures/skeleton/git', $this->tmpdir);
+                $filesystem->mkdir($tmpdir);
+                $filesystem->mirror(__DIR__ . '/Test/Fixtures/skeleton/git', $tmpdir);
             }))
         ;
 
@@ -120,14 +122,16 @@ class GitTest extends PHPUnit_Framework_TestCase
             ->getMock()
         ;
 
+        $tmpdir = $this->tmpdir;
+
         $this->cli
             ->expects($this->once())
             ->method('execute')
             ->with(sprintf('%s clone -b \'%s\' \'%s\' \'%s\'', $this->bin, 'master', $this->url, $this->tmpdir))
-            ->will($this->returnCallback(function() {
+            ->will($this->returnCallback(function() use ($tmpdir) {
                 $filesystem = new Filesystem();
-                $filesystem->mkdir($this->tmpdir);
-                $filesystem->mirror(__DIR__ . '/Test/Fixtures/skeleton/git', $this->tmpdir);
+                $filesystem->mkdir($tmpdir);
+                $filesystem->mirror(__DIR__ . '/Test/Fixtures/skeleton/git', $tmpdir);
             }))
         ;
 
