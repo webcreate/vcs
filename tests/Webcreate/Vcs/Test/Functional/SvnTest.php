@@ -24,7 +24,7 @@ class SvnTest extends AbstractTest
 
         $this->setupSvn();
 
-        $bin = isset($_ENV['SVN_BIN']) ? $_ENV['SVN_BIN'] : '/usr/local/bin/svn';
+        $bin = getenv('SVN_BIN') ? getenv('SVN_BIN') : '/usr/local/bin/svn';
 
         $parser = new CliParser();
         $adapter = new CliAdapter($bin, new Cli(), $parser);

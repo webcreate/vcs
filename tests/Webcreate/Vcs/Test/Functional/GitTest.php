@@ -25,7 +25,7 @@ class GitTest extends AbstractTest
 
         $this->setupGit();
 
-        $bin = isset($_ENV['GIT_BIN']) ? $_ENV['GIT_BIN'] : '/usr/local/bin/git';
+        $bin = getenv('GIT_BIN') ? getenv('GIT_BIN') : '/usr/local/bin/git';
 
         $parser = new CliParser();
         $adapter = new CliAdapter($bin, new Cli(), $parser);
