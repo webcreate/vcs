@@ -33,13 +33,15 @@ class GitTest extends PHPUnit_Framework_TestCase
     {
         $expected = sprintf('%s clone -b \'%s\' \'%s\' \'%s\'', $this->bin, 'master', $this->url, $this->tmpdir);
 
+        $tmpdir = $this->tmpdir;
+
         $this->cli
             ->expects($this->any())
             ->method('execute')
             ->with($expected)
-            ->will($this->returnCallback(function() {
+            ->will($this->returnCallback(function() use ($tmpdir) {
                 $filesystem = new Filesystem();
-                $filesystem->mkdir($this->tmpdir);
+                $filesystem->mkdir($tmpdir);
             }))
         ;
 
