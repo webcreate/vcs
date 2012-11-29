@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<log>
+<logentry
+   revision="2">
+<author>jeroen</author>
+<date>2012-10-25T19:16:33.725379Z</date>
+<msg>added symfony app folder</msg>
+</logentry>
+<logentry
+   revision="1">
+<author>jeroen</author>
+<date>2012-10-22T20:26:32.210578Z</date>
+<msg>Initial commit</msg>
+</logentry>
+</log>
