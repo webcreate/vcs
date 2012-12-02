@@ -18,20 +18,48 @@ use Webcreate\Vcs\Svn;
  */
 class WorkingCopy
 {
+    /**
+     * Path of working copy
+     *
+     * @var string
+     */
     protected $cwd;
+
+    /**
+     * Svn client
+     *
+     * @var \Webcreate\Vcs\Svn
+     */
     protected $svn;
 
+    /**
+     * Constructor.
+     *
+     * @param Svn    $svn Svn client
+     * @param string $cwd path to the working copy directory
+     */
     public function __construct(Svn $svn, $cwd)
     {
         $this->svn = $svn;
         $this->cwd = $cwd;
     }
 
+    /**
+     * Perform a checkout
+     *
+     * @throws NotFoundException
+     */
     public function checkout()
     {
         $this->svn->execute('checkout', array($this->svn->getSvnUrl(''), $this->cwd));
     }
 
+    /**
+     * Add file or directory to Svn
+     *
+     * @param string $path
+     * @throws NotFoundException
+     */
     public function add($path)
     {
         if (!file_exists($this->cwd . '/' . $path)) {
@@ -49,6 +77,11 @@ class WorkingCopy
         }
     }
 
+    /**
+     * Commit modified and/or added files to Svn
+     *
+     * @param string $message commit message
+     */
     public function commit($message)
     {
         $this->chdir();
@@ -56,6 +89,12 @@ class WorkingCopy
         return $this->svn->execute('commit', array('-m' => $message));
     }
 
+    /**
+     * Get the status of the working copy
+     *
+     * @param string $path
+     * @return \Webcreate\Vcs\Common\FileInfo[]
+     */
     public function status($path = null)
     {
         $this->chdir();
@@ -68,6 +107,9 @@ class WorkingCopy
         return $this->svn->execute('status', $args);
     }
 
+    /**
+     * Change current working directory if not already done
+     */
     protected function chdir()
     {
         if (getcwd() !== $this->cwd) {

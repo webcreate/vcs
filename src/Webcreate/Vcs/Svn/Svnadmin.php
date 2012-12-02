@@ -12,19 +12,53 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
+/**
+ * Svnadmin utility
+ *
+ * @author Jeroen Fiege <jeroen@webcreate.nl>
+ */
 class Svnadmin
 {
+    /**
+     * Basedir of svn repositories
+     *
+     * @var string
+     */
     protected $svndir;
+
+    /**
+     * Commandline interface wrapper
+     *
+     * @var Cli
+     */
     protected $cli;
+
+    /**
+     * Path the Svnadmin executable
+     *
+     * @var string
+     */
     protected $bin;
 
+    /**
+     * Constructor.
+     *
+     * @param string $svndir basedir of svn repositories
+     * @param string $bin    path to the svnadmin executable
+     * @param Cli    $cli
+     */
     public function __construct($svndir, $bin = '/usr/local/bin/svnadmin', Cli $cli = null)
     {
         $this->svndir = $svndir;
-        $this->bin = $bin;
-        $this->cli = $cli ?: new Cli();
+        $this->bin    = $bin;
+        $this->cli    = $cli ?: new Cli();
     }
 
+    /**
+     * Creates a new repository
+     *
+     * @param string $name
+     */
     public function create($name)
     {
         $path = $this->getReposDir($name);
@@ -32,6 +66,12 @@ class Svnadmin
         return $this->exec('create', array($path));
     }
 
+    /**
+     * Destroys a specific repository
+     *
+     * @param string $name
+     * @throws \InvalidArgumentException
+     */
     public function destroy($name)
     {
         $path = $this->getReposDir($name);
@@ -60,11 +100,26 @@ class Svnadmin
         $filesystem->symlink($svnserveFile, $this->getReposDir($name));
     }
 
+    /**
+     * Returns repository path
+     *
+     * @param string $name
+     * @return string
+     */
     protected function getReposDir($name)
     {
         return $this->svndir . '/' . $name;
     }
 
+    /**
+     * Executes a svnadmin command
+     *
+     * @param string $command
+     * @param array  $arguments
+     * @throws ProcessFailedException
+     * @throws \RuntimeException
+     * @return string
+     */
     protected function exec($command, array $arguments = array())
     {
         $command = $this->bin . ' ' . $command;

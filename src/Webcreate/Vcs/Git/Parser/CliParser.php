@@ -13,21 +13,42 @@ use Webcreate\Vcs\Common\FileInfo;
 use Webcreate\Vcs\Common\AbstractClient;
 use Webcreate\Vcs\Common\Parser\ParserInterface;
 
+/**
+ * Commandline output parser
+ *
+ * @author Jeroen Fiege <jeroen@webcreate.nl>
+ */
 class CliParser implements ParserInterface
 {
+    /**
+     * @var AbstractClient
+     */
     protected $client;
 
+    /**
+     * Returns client
+     *
+     * @return AbstractClient
+     */
     public function getClient()
     {
         return $this->client;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see Webcreate\Vcs\Common\Parser.ParserInterface::setClient()
+     */
     public function setClient(AbstractClient $client)
     {
         $this->client = $client;
         return $this;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see Webcreate\Vcs\Common\Parser.ParserInterface::parse()
+     */
     public function parse($command, array $arguments = array(), $output)
     {
         switch($command) {
@@ -45,10 +66,17 @@ class CliParser implements ParserInterface
         return $output;
     }
 
+    /**
+     * Parses the log command output to Commit objects
+     *
+     * @param string $output
+     * @param array  $arguments
+     * @return string|\Webcreate\Vcs\Common\Commit[]
+     */
     public function parseLogOutput($output, array $arguments = array())
     {
         if (!isset($arguments['--pretty=']) || Git::PRETTY_FORMAT !== $arguments['--pretty=']) {
-            // non name-status results are not supported
+            // non pretty results are not supported
             return $output;
         }
 
@@ -69,10 +97,18 @@ class CliParser implements ParserInterface
         return $retval;
     }
 
+    /**
+     * Parse the status command output to FileInfo objects
+     *
+     * @param string $output
+     * @param array  $arguments
+     * @throws \Exception
+     * @return string|\Webcreate\Vcs\Common\FileInfo[]
+     */
     public function parseStatusOutput($output, array $arguments = array())
     {
         if (!isset($arguments['--porcelain']) || false === $arguments['--porcelain']) {
-            // non name-status results are not supported
+            // non porcelain results are not supported
             return $output;
         }
 
@@ -95,6 +131,14 @@ class CliParser implements ParserInterface
         return $retval;
     }
 
+    /**
+     * Parse the diff command output to FileInfo objects
+     *
+     * @param string $output
+     * @param array  $arguments
+     * @throws \Exception
+     * @return string|\Webcreate\Vcs\Common\FileInfo[]
+     */
     public function parseDiffOutput($output, array $arguments = array())
     {
         if (!isset($arguments['--name-status']) || false === $arguments['--name-status']) {

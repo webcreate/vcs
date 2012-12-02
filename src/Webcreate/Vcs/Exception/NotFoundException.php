@@ -7,4 +7,9 @@
 
 namespace Webcreate\Vcs\Exception;
 
-class NotFoundException extends \Exception {}
+/**
+ * @author Jeroen Fiege <jeroen@webcreate.nl>
+ */
+class NotFoundException extends \Exception
+{
+}

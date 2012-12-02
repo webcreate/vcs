@@ -9,6 +9,11 @@ namespace Webcreate\Vcs\Common\Parser;
 
 use Webcreate\Vcs\Common\AbstractClient;
 
+/**
+ * Interface for output parsers.
+ *
+ * @author Jeroen Fiege <jeroen@webcreate.nl>
+ */
 interface ParserInterface
 {
     /**
@@ -21,7 +26,7 @@ interface ParserInterface
     public function parse($command, array $arguments = array(), $output);
 
     /**
-     * Informs the adapter about the client
+     * Informs the parser about the client
      *
      * @param AbstractClient $client
      */

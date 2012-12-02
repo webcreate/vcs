@@ -16,11 +16,15 @@ interface VcsInterface
 {
     /**
      * Return branches
+     *
+     * @return array list of branch names
      */
     public function branches();
 
     /**
      * Return tags
+     *
+     * @return array list of tag names
      */
     public function tags();
 
@@ -47,6 +51,8 @@ interface VcsInterface
 
     /**
      * Retuns the status of the working copy
+     *
+     * @param string $path
      */
     public function status($path);
 
