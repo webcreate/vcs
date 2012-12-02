@@ -27,7 +27,31 @@ executable or use the installer.
 
 3. Run Composer: `php composer.phar install`
 
-Documenation
-------------
+Getting started
+---------------
+
+Webcreate\Vcs is build around a single interface, the `VcsInterface`.
+This interface contains methods to work with a version control system.
+
+This libary currently contains two implementations of the interface:
+`Svn` and `Git`.
+
+Lets say you want to get the latest commits from git. Here is an example:
+
+``` php
+// Example R1
+use Webcreate\Vcs\Git;
+
+$git = new Git('https://someserver/somerepo.git');
+
+// Retrieve the 20 latest commits for master
+$result = $git->log('.', null, 20);
+foreach($result as $commit) {
+    $date        = $commit->getDate();
+    $author      = $commit->getAuthor();
+    $revision    = $commit->getRevision();
+    $message     = $commit->getMessage();
+}
+```
 
 Full documentation is available in [docs/](docs/).

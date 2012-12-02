@@ -64,7 +64,7 @@ class CliAdapter implements AdapterInterface
      */
     public function __construct($bin, Cli $cli, ParserInterface $parser = null)
     {
-        $this->bin = $bin;
+        $this->setExecutable($bin);
         $this->cli = $cli;
         $this->setParser($parser);
     }
@@ -123,6 +123,28 @@ class CliAdapter implements AdapterInterface
     public function setGlobalArguments(array $arguments)
     {
         $this->globalArguments = $arguments;
+        return $this;
+    }
+
+    /**
+     * Get the executable path
+     *
+     * @return string
+     */
+    public function getExecutable()
+    {
+        return $this->bin;
+    }
+
+    /**
+     * Set the executable path
+     *
+     * @param string $bin
+     * @return \Webcreate\Vcs\Common\Adapter\CliAdapter
+     */
+    public function setExecutable($bin)
+    {
+        $this->bin = $bin;
         return $this;
     }
 

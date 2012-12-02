@@ -7,6 +7,8 @@
 
 namespace Webcreate\Vcs\Test\Functional;
 
+use Webcreate\Vcs\Test\Util\SvnReposGenerator;
+
 use Webcreate\Vcs\Svn\Parser\CliParser;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Filesystem\Filesystem;
@@ -19,10 +21,9 @@ class SvnTest extends AbstractTest
     public function getClient()
     {
         $this->tmpdir = sys_get_temp_dir() . '/' . uniqid('wbcrte-svn-');
-        $this->svndir = $this->tmpdir . '/svn-repos';
-        $this->wcdir = $this->tmpdir . '/svn-wc';
 
-        $this->setupSvn();
+        $svnReposGenerator = new SvnReposGenerator(__DIR__ . '/../Fixtures/skeleton/svn/');
+        list($this->svndir, $this->wcdir) = $svnReposGenerator->generate($this->tmpdir);
 
         $bin = getenv('SVN_BIN') ? getenv('SVN_BIN') : '/usr/local/bin/svn';
 
@@ -31,26 +32,6 @@ class SvnTest extends AbstractTest
         $client = new Svn('file://' . $this->svndir, $adapter);
 
         return $client;
-    }
-
-    protected function setupSvn()
-    {
-        $commandlist = array(
-            sprintf('mkdir -p %s', $this->tmpdir),
-            sprintf('cd %s && svnadmin create %s', $this->tmpdir, basename($this->svndir)),
-            sprintf('cd %s && svn checkout file:///%s %s', $this->tmpdir, $this->svndir, basename($this->wcdir)),
-            sprintf('rsync -r --exclude=.svn %s %s', __DIR__ . '/../Fixtures/skeleton/svn/', $this->wcdir),
-            sprintf('cd %s && svn add *', $this->wcdir),
-            sprintf('cd %s && svn ci -m "added skeleton"', $this->wcdir),
-            sprintf('cd %s && svn up', $this->wcdir),
-        );
-
-        foreach($commandlist as $commandline) {
-            $process = new Process($commandline);
-            if ($process->run() <> 0) {
-                $this->markTestSkipped('Error: ' . $process->getErrorOutput());
-            }
-        }
     }
 
     public function existingPathProvider()

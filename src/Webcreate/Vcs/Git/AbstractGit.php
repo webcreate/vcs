@@ -7,6 +7,7 @@
 
 namespace Webcreate\Vcs\Git;
 
+use Webcreate\Util\Cli;
 use Webcreate\Vcs\Common\Pointer;
 use Webcreate\Vcs\Git\Parser\CliParser;
 use Webcreate\Vcs\Common\Adapter\CliAdapter;

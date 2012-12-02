@@ -4,6 +4,7 @@ Here is a simple example to get the contents of trunk of
 a Subversion repository:
 
 ``` php
+// Example B1
 use Webcreate\Vcs\Svn;
 
 $svn = new Svn('svn://someserver/somerepo');
@@ -24,6 +25,7 @@ foreach($result as $fileinfo) {
 A similar approach for a Git repository:
 
 ``` php
+// Example B2
 use Webcreate\Vcs\Git;
 
 $git = new Git('https://someserver/somerepo');
@@ -40,5 +42,4 @@ foreach($result as $fileinfo) {
 }
 ```
 
-
-[Intro](00-intro.md) &larr;
+&larr; [Intro](00-intro.md) | [The interface](02-the-interface.md) &rarr;

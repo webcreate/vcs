@@ -55,6 +55,11 @@ abstract class AbstractSvn extends AbstractClient
      */
     protected $cwd;
 
+    /**
+     * Basepaths mapping
+     *
+     * @var array
+     */
     protected $basePaths = array(
             'trunk'    => 'trunk',
             'tags'     => 'tags',

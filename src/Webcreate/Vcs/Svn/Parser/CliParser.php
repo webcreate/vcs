@@ -14,26 +14,47 @@ use Webcreate\Vcs\Common\Commit;
 use Webcreate\Vcs\Common\FileInfo;
 use Webcreate\Vcs\Common\Parser\ParserInterface;
 
+/**
+ * Commandline output parser for Svn
+ *
+ * @author Jeroen Fiege <jeroen@webcreate.nl>
+ */
 class CliParser implements ParserInterface
 {
+    /**
+     * @var \Webcreate\Vcs\Svn
+     */
     protected $client;
 
+    /**
+     * Returns client
+     *
+     * @return \Webcreate\Vcs\Svn
+     */
     public function getClient()
     {
         return $this->client;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see Webcreate\Vcs\Common\Parser.ParserInterface::setClient()
+     */
     public function setClient(AbstractClient $client)
     {
         if (false === $client instanceof Svn) {
             throw new \InvalidArgumentException(sprintf('Expected argument $client to be Webcreate\Vcs\Svn instead %s given.', get_class($client)));
         }
-        
+
         $this->client = $client;
-        
+
         return $this;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see Webcreate\Vcs\Common\Parser.ParserInterface::parse()
+     */
     public function parse($command, array $arguments = array(), $output)
     {
         switch($command) {
@@ -54,6 +75,13 @@ class CliParser implements ParserInterface
         return $output;
     }
 
+    /**
+     * Parse the status command output
+     *
+     * @param string $output
+     * @throws \Exception
+     * @return \Webcreate\Vcs\Common\FileInfo[]
+     */
     public function parseStatusOutput($output)
     {
         $lines = explode("\n", rtrim($output));
@@ -133,7 +161,6 @@ class CliParser implements ParserInterface
                     (string) $entry->author,
                     (string) $entry->msg
             );
-
         }
 
         return $retval;
