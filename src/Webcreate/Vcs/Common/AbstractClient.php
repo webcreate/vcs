@@ -31,11 +31,11 @@ abstract class AbstractClient
     protected $adapter;
 
     /**
-     * Internal pointer to a branch or tag
+     * Reference to current branch or tag
      *
-     * @var Webcreate\Vcs\Common\Pointer
+     * @var Webcreate\Vcs\Common\Reference
      */
-    protected $pointer;
+    protected $head;
 
     /**
      * Constructor.
@@ -96,24 +96,29 @@ abstract class AbstractClient
     }
 
     /**
-     * Set internal pointer
+     * Set HEAD
      *
-     * @param Pointer $pointer
+     * @param array|Reference $reference
      * @return \Webcreate\Vcs\Common\AbstractClient
      */
-    public function setPointer(Pointer $pointer)
+    public function setHead($reference)
     {
-        $this->pointer = $pointer;
+        if ($reference instanceof Reference) {
+            $this->head = $reference;
+        } elseif (is_array($reference)) {
+            list ($name, $type) = $reference;
+            $this->head = new Reference($name, $type);
+        }
         return $this;
     }
 
     /**
      * Get internal pointer
      *
-     * @return \Webcreate\Vcs\Common\Pointer
+     * @return \Webcreate\Vcs\Common\Reference
      */
-    public function getPointer()
+    public function getHead()
     {
-        return $this->pointer;
+        return $this->head;
     }
 }

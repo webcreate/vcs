@@ -7,8 +7,8 @@
 
 namespace Webcreate\Vcs\Test\Functional;
 
-use Webcreate\Vcs\Common\Pointer;
-use Webcreate\Vcs\Common\FileInfo;
+use Webcreate\Vcs\Common\Reference;
+use Webcreate\Vcs\Common\VcsFileInfo;
 use Webcreate\Vcs\Common\Status;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -43,7 +43,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $result = $this->client->ls('');
 
         $this->assertInternalType('array', $result);
-        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\FileInfo', $result);
+        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\VcsFileInfo', $result);
     }
 
     /**
@@ -62,7 +62,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $result = $this->client->ls($subfolder);
 
         $this->assertInternalType('array', $result);
-        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\FileInfo', $result);
+        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\VcsFileInfo', $result);
     }
 
 
@@ -72,6 +72,12 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     public function testLog($path)
     {
         $result = $this->client->log($path);
+        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\Commit', $result);
+    }
+
+    public function testLogForEmptyPath()
+    {
+        $result = $this->client->log('');
         $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\Commit', $result);
     }
 
@@ -112,11 +118,11 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->client->status();
 
-        $expected = array(
-                new FileInfo(basename($tmpfile), FileInfo::FILE, null, Status::UNVERSIONED)
-        );
+        $file = new VcsFileInfo(basename($tmpfile), $this->client->getHead());
+        $file->setStatus(Status::UNVERSIONED);
+        $expected = array($file);
 
-        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\FileInfo', $result);
+        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\VcsFileInfo', $result);
         $this->assertEquals($expected, $result);
     }
 
@@ -132,9 +138,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->client->status();
 
-        $expected = array(
-                new FileInfo(basename($tmpfile), FileInfo::FILE, null, Status::ADDED)
-        );
+        $file = new VcsFileInfo(basename($tmpfile), $this->client->getHead());
+        $file->setStatus(Status::ADDED);
+        $expected = array($file);
 
         $this->assertEquals($expected, $result);
     }
@@ -155,9 +161,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->client->status();
 
-        $expected = array(
-                new FileInfo(basename($tmpfile), FileInfo::FILE, null, Status::MODIFIED)
-        );
+        $file = new VcsFileInfo(basename($tmpfile), $this->client->getHead());
+        $file->setStatus(Status::MODIFIED);
+        $expected = array($file);
 
         $this->assertEquals($expected, $result);
     }
@@ -212,14 +218,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
         $diff = $this->client->diff($filename, $filename, $firstRevision);
 
-        $expected = array(
-                new FileInfo(
-                        $filename,
-                        FileInfo::FILE,
-                        null,
-                        Status::MODIFIED
-                ),
-        );
+        $file = new VcsFileInfo($filename, $this->client->getHead());
+        $file->setStatus(Status::MODIFIED);
+        $expected = array($file);
 
         $this->assertEquals($expected, $diff);
     }
@@ -228,8 +229,13 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     {
         $branches = $this->client->branches();
 
+        $branchNames = array_map(function($ref) {
+            return $ref->getName();
+        }, $branches);
+
         $this->assertInternalType('array', $branches);
-        $this->assertContains('feature1', $branches);
+        $this->assertContains('feature1', $branchNames);
+        $this->assertContainsOnlyInstancesOf('Webcreate\Vcs\Common\Reference', $branches);
     }
 
     public function testTags()
@@ -241,6 +247,6 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
     public function testSwitchingToDifferentBranch()
     {
-        $result = $this->client->setPointer(new Pointer('feature1'));
+        $result = $this->client->setHead(new Reference('feature1'));
     }
 }

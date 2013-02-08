@@ -7,9 +7,9 @@
 
 namespace Webcreate\Vcs\Git\Parser;
 
+use Webcreate\Vcs\Common\VcsFileInfo;
 use Webcreate\Vcs\Common\Commit;
 use Webcreate\Vcs\Git;
-use Webcreate\Vcs\Common\FileInfo;
 use Webcreate\Vcs\Common\AbstractClient;
 use Webcreate\Vcs\Common\Parser\ParserInterface;
 
@@ -86,12 +86,12 @@ class CliParser implements ParserInterface
 
         $retval = array();
         foreach($sxml->logentry as $entry) {
-            $retval[] = new Commit(
-                    (string) $entry->commit,
-                    new \DateTime((string)  $entry->date),
-                    (string) $entry->author,
-                    (string) $entry->msg
-            );
+            $revision = (string) $entry->commit;
+            $date     = (string) $entry->date;
+            $author   = (string) $entry->author;
+            $message  = (string) $entry->msg;
+
+            $retval[] = new Commit($revision, new \DateTime($date), $author, $message);
         }
 
         return $retval;
@@ -119,7 +119,8 @@ class CliParser implements ParserInterface
             if (preg_match('/([A-Z\?\s])([A-Z\?\s])\s(.*)( -> (.*))?/', $line, $matches)) {
                 list($fullmatch, $x, $y, $file) = $matches;
 
-                $file = new FileInfo($file, FileInfo::FILE, null, $x);
+                $file = new VcsFileInfo($file, $this->getClient()->getHead());
+                $file->setStatus($x);
 
                 $retval[] = $file;
             }
@@ -153,12 +154,8 @@ class CliParser implements ParserInterface
             if (preg_match('/([ACDMRTUXB])\s+(.*)?/', $line, $matches)) {
                 list($fullmatch, $x, $file) = $matches;
 
-                $file = new FileInfo(
-                        $file,
-                        FileInfo::FILE,
-                        null,
-                        $x
-                );
+                $file = new VcsFileInfo($file, $this->getClient()->getHead());
+                $file->setStatus($x);
 
                 $retval[] = $file;
             }

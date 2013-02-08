@@ -7,15 +7,14 @@
 
 namespace Webcreate\Vcs\Svn;
 
-use Webcreate\Vcs\Common\Pointer;
+use Webcreate\Vcs\Common\VcsFileInfo;
+use Webcreate\Vcs\Common\Reference;
 use Webcreate\Vcs\Svn\Parser\CliParser;
 use Webcreate\Util\Cli;
 use Webcreate\Vcs\Common\Adapter\CliAdapter;
 use Webcreate\Vcs\Exception\NotFoundException;
 use Webcreate\Vcs\Common\AbstractClient;
 use Webcreate\Vcs\Common\Adapter\AdapterInterface;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 /**
  * Abstract base class for Svn class.
@@ -80,7 +79,7 @@ abstract class AbstractSvn extends AbstractClient
 
         parent::__construct($url, $adapter);
 
-        $this->setPointer(new Pointer('trunk'));
+        $this->setHead(new Reference('trunk'));
     }
 
     /**
@@ -152,14 +151,15 @@ abstract class AbstractSvn extends AbstractClient
      *
      * @param string $command
      * @param array  $arguments
+     * @param string $cwd
      * @return string
      */
-    public function execute($command, array $arguments = array())
+    public function execute($command, array $arguments = array(), $cwd = null)
     {
         $arguments += $this->getGlobalArguments();
 
         try {
-            $result = $this->adapter->execute($command, $arguments);
+            $result = $this->adapter->execute($command, $arguments, $cwd);
         }
         catch (\Exception $e) {
             // @todo move to a generic error handler? Something similar to the ParserInterface
@@ -179,33 +179,43 @@ abstract class AbstractSvn extends AbstractClient
     /**
      * Returns url for a specific path
      *
-     * @param string $path
+     * @param string|VcsFileInfo $path
      * @return string
      */
     public function getSvnUrl($path)
     {
-        $pointer = $this->pointer;
+        $head = $this->head;
 
-        switch($pointer->getType()) {
-            case Pointer::TYPE_BRANCH:
-                if ('trunk' === $pointer->getName()) {
-                    $basePath = $this->basePaths['trunk'];
-                }
-                else {
-                    $basePath = $this->basePaths['branches'] . '/' . $pointer->getName();
-                }
-                break;
-            case Pointer::TYPE_TAG:
-                $basePath = $this->basePaths['tags'] . '/' . $pointer->getName();
-                break;
+        if ($path instanceof Reference) {
+            $head = $path;
+            $path = '/';
+        }
+
+        if (is_string($path)) {
+            $path = new VcsFileInfo($path, array($head->getName(), $head->getType()));
+        }
+
+        if ($path->inBranch()) {
+            $branchName = $path->getReferenceName();
+
+            if ('trunk' === $branchName) {
+                $basePath = $this->basePaths['trunk'];
+            }
+            else {
+                $basePath = $this->basePaths['branches'] . '/' . $branchName;
+            }
+        } elseif ($path->inTag()) {
+            $tagName = $path->getReferenceName();
+
+            $basePath = $this->basePaths['tags'] . '/' . $tagName;
         }
 
         $retval = $this->url;
         if ($basePath) {
             $retval.= '/' . $basePath;
         }
-        $retval.= '/' . ltrim($path, '/');
 
+        $retval.= '/' . ltrim($path->getPathname(), '/');
         $retval = rtrim($retval, '/');
 
         return $retval;

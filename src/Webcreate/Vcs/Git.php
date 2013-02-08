@@ -7,7 +7,8 @@
 
 namespace Webcreate\Vcs;
 
-use Webcreate\Vcs\Common\FileInfo;
+use Webcreate\Vcs\Common\VcsFileInfo;
+use Webcreate\Vcs\Common\Reference;
 use Webcreate\Vcs\Common\Status;
 use Webcreate\Vcs\Exception\NotFoundException;
 use Webcreate\Vcs\Common\Commit;
@@ -42,9 +43,13 @@ class Git extends AbstractGit implements VcsInterface
             $realdest = $dest;
         }
 
-        $result = $this->execute('clone', array('-b' => (string) $this->getPointer(), $this->url, $realdest));
+        $head = $this->getHead();
+        $branch = $head->getName();
+        if ($head->getType() === Reference::TAG) {
+            $branch = 'refs/tags/' . $head->getName();
+        }
 
-        chdir($realdest);
+        $result = $this->execute('clone', array('-b' => (string) $branch, $this->url, $realdest));
 
         $this->setCwd($realdest);
 
@@ -126,6 +131,8 @@ class Git extends AbstractGit implements VcsInterface
         $this->setCwd($dest);
         $this->checkout();
 
+        $this->isTemporary = false;
+
         $filesystem = new Filesystem();
         $filesystem->remove($dest . '/.git');
     }
@@ -157,8 +164,9 @@ class Git extends AbstractGit implements VcsInterface
             $log = $this->log(($path ? $path . '/' : '') . $file->getRelativePathname(), null, 1);
 
             $commit = reset($log);
-            $kind = $file->isDir() ? FileInfo::DIR : FileInfo::FILE;
-            $file = new FileInfo($file->getFilename(), $kind, $commit);
+            $kind = $file->isDir() ? VcsFileInfo::DIR : VcsFileInfo::FILE;
+            $file = new VcsFileInfo($file->getFilename(), $this->getHead(), $kind);
+            $file->setCommit($commit);
 
             $entries[] = $file;
         }
@@ -175,6 +183,10 @@ class Git extends AbstractGit implements VcsInterface
     {
         if (!$this->hasCheckout) {
             $this->checkout();
+        }
+
+        if ('' === $path) {
+            $path = '.';
         }
 
         return $this->execute('log', array(
@@ -206,6 +218,10 @@ class Git extends AbstractGit implements VcsInterface
     /**
      * (non-PHPdoc)
      * @see Webcreate\Vcs.VcsInterface::diff()
+     *
+     * @todo handle oldPath and newPath as References/VcsFileInfos:
+     *     The command "/usr/local/bin/git diff --name-status '981abd298692d2ae531a904dbdab774589e05e3f' '981abd298692d2ae531a904dbdab774589e05e3f' 'master' 'refactor'" failed.
+     *     usage: git diff [--no-index] <path> <path>
      */
     public function diff($oldPath, $newPath, $oldRevision = 'HEAD',
             $newRevision = 'HEAD', $summary = true)
@@ -232,7 +248,7 @@ class Git extends AbstractGit implements VcsInterface
         $branches = array();
         foreach($list as $line) {
             list ($hash, $ref) = explode("\t", $line);
-            $branches[] = basename($ref);
+            $branches[] = new Reference(basename($ref), Reference::BRANCH, $hash);
         }
 
         return $branches;
@@ -255,7 +271,7 @@ class Git extends AbstractGit implements VcsInterface
         $tags = array();
         foreach($list as $line) {
             list ($hash, $ref) = explode("\t", $line);
-            $tags[] = basename($ref);
+            $tags[] = new Reference(basename($ref), Reference::TAG, $hash);
         }
 
         return $tags;

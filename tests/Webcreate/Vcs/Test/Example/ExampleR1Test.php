@@ -12,6 +12,10 @@ use Webcreate\Vcs\Test\Util\SvnReposGenerator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
+/**
+ * @group example
+ *
+ */
 class ExampleR1Test extends AbstractExampleTest
 {
     protected function getSourceFilename()

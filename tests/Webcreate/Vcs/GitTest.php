@@ -5,7 +5,8 @@
  * @copyright Webcreate (http://webcreate.nl)
  */
 
-use Webcreate\Vcs\Common\FileInfo;
+use Webcreate\Vcs\Common\VcsFileInfo;
+use Webcreate\Vcs\Common\Reference;
 use Webcreate\Vcs\Common\Commit;
 use Symfony\Component\Filesystem\Filesystem;
 use Webcreate\Vcs\Git;
@@ -76,10 +77,11 @@ class GitTest extends PHPUnit_Framework_TestCase
 
         $result = $git->ls('/dir1');
 
-        $expected = new FileInfo('sample1.php', FileInfo::FILE, $commit);
+        $expected = new VcsFileInfo('sample1.php', new Reference('master'), VcsFileInfo::FILE);
+        $expected->setCommit($commit);
 
         $this->assertCount(1, $result);
-        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\FileInfo', $result);
+        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\VcsFileInfo', $result);
         $this->assertEquals($expected, $result[0]);
     }
 

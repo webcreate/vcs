@@ -1,7 +1,7 @@
 {
     "name": "webcreate/vcs",
     "type": "library",
-    "keywords": ["vcs", "svn", "git"],
+    "keywords": ["vcs", "svn", "git", "versioncontrol", "subversion"],
     "description": "PHP interface for version control systems",
     "homepage": "https://github.com/webcreate/vcs",
     "license": "MIT",
