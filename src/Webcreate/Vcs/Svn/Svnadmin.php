@@ -97,7 +97,7 @@ class Svnadmin
     {
         $filesystem = new Filesystem();
         $filesystem->rename($this->getReposDir($name) . '/conf/svnserve.conf', $this->getReposDir($name) . '/conf/svnserve.conf~');
-        $filesystem->symlink($svnserveFile, $this->getReposDir($name));
+        $filesystem->symlink($svnserveFile, $this->getReposDir($name) . '/conf/svnserve.conf');
     }
 
     /**

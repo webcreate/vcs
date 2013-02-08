@@ -66,13 +66,11 @@ class WorkingCopy
             throw new NotFoundException(sprintf('Path %s not found', $this->cwd . '/' . $path));
         }
 
-        $this->chdir();
-
         $result = $this->status($path);
 
         foreach($result as $fileInfo) {
             if ($fileInfo->getStatus() === Status::UNVERSIONED) {
-                $this->svn->execute('add', array($fileInfo->getName()));
+                $this->svn->execute('add', array($fileInfo->getPathname()), $this->cwd);
             }
         }
     }
@@ -84,36 +82,22 @@ class WorkingCopy
      */
     public function commit($message)
     {
-        $this->chdir();
-
-        return $this->svn->execute('commit', array('-m' => $message));
+        return $this->svn->execute('commit', array('-m' => $message), $this->cwd);
     }
 
     /**
      * Get the status of the working copy
      *
      * @param string $path
-     * @return \Webcreate\Vcs\Common\FileInfo[]
+     * @return \Webcreate\Vcs\Common\VcsFileInfo[]
      */
     public function status($path = null)
     {
-        $this->chdir();
-
         $args = array();
         if (null !== $path) {
             $args[] = $path;
         }
 
-        return $this->svn->execute('status', $args);
-    }
-
-    /**
-     * Change current working directory if not already done
-     */
-    protected function chdir()
-    {
-        if (getcwd() !== $this->cwd) {
-            chdir($this->cwd);
-        }
+        return $this->svn->execute('status', $args, $this->cwd);
     }
 }

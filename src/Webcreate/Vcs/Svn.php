@@ -7,8 +7,7 @@
 
 namespace Webcreate\Vcs;
 
-use Webcreate\Vcs\Common\Pointer;
-use Webcreate\Vcs\Common\FileInfo;
+use Webcreate\Vcs\Common\Reference;
 use Webcreate\Vcs\Svn\WorkingCopy;
 use Webcreate\Vcs\Common\Commit;
 use Webcreate\Vcs\Svn\AbstractSvn;
@@ -157,9 +156,14 @@ class Svn extends AbstractSvn implements VcsInterface
     {
         $result = $this->execute('list', array('--xml' => true, $this->getUrl() . '/' . $this->basePaths['branches']));
 
-        $branches = array('trunk');
+        $logTrunk = $this->log('/', null, 1);
+        $logTrunk = reset($logTrunk);
+
+        $branches = array();
+        $branches[] = new Reference('trunk', Reference::BRANCH, $logTrunk->getRevision());
+
         foreach($result as $fileinfo) {
-            $branches[] = $fileinfo->getName();
+            $branches[] = new Reference($fileinfo->getFilename(), Reference::BRANCH, $fileinfo->getCommit()->getRevision());
         }
 
         return $branches;
@@ -175,7 +179,7 @@ class Svn extends AbstractSvn implements VcsInterface
 
         $tags = array();
         foreach($result as $fileinfo) {
-            $tags[] = $fileinfo->getName();
+            $tags[] = new Reference($fileinfo->getFilename(), Reference::TAG, $fileinfo->getCommit()->getRevision());
         }
 
         return $tags;

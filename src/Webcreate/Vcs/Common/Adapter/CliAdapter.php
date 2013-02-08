@@ -164,13 +164,13 @@ class CliAdapter implements AdapterInterface
      *
      * @return mixed
      */
-    public function execute($command, array $arguments = array())
+    public function execute($command, array $arguments = array(), $cwd = null)
     {
-        $bincommand = $this->bin . ' ' . $command;
-        $arguments += $this->getGlobalArguments();
+        $bincommand  = $this->bin . ' ' . $command;
+        $arguments  += $this->getGlobalArguments();
         $commandline = $this->cli->prepare($bincommand, $arguments);
 
-        if ($this->cli->execute($commandline) <> 0) {
+        if ($this->cli->execute($commandline, null, $cwd) <> 0) {
             throw new ProcessFailedException($this->cli->getProcess());
         } elseif ($message = $this->cli->getErrorOutput()) {
             throw new \RuntimeException($message);

@@ -7,8 +7,8 @@
 
 namespace Webcreate\Vcs\Git;
 
+use Webcreate\Vcs\Common\Reference;
 use Webcreate\Util\Cli;
-use Webcreate\Vcs\Common\Pointer;
 use Webcreate\Vcs\Git\Parser\CliParser;
 use Webcreate\Vcs\Common\Adapter\CliAdapter;
 use Webcreate\Vcs\Common\Adapter\AdapterInterface;
@@ -62,7 +62,7 @@ abstract class AbstractGit extends AbstractClient
         parent::__construct($url, $adapter);
 
         $this->setCwd($cwd);
-        $this->setPointer(new Pointer('master'));
+        $this->setHead(new Reference('master'));
     }
 
     /**
@@ -100,7 +100,7 @@ abstract class AbstractGit extends AbstractClient
      */
     protected function execute($command, array $arguments = array())
     {
-        return $this->adapter->execute($command, $arguments);
+        return $this->adapter->execute($command, $arguments, $this->cwd);
     }
 
     /**
