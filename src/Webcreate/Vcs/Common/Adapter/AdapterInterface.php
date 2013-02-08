@@ -21,9 +21,10 @@ interface AdapterInterface
      *
      * @param string $command
      * @param array  $arguments
+     * @param string $cwd       path to run the command from
      * @return string
      */
-    public function execute($command, array $arguments = array());
+    public function execute($command, array $arguments = array(), $cwd = null);
 
     /**
      * Informs the adapter about the client

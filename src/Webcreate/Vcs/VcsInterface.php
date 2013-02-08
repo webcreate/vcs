@@ -15,6 +15,20 @@ namespace Webcreate\Vcs;
 interface VcsInterface
 {
     /**
+     * Set the branch or tag you are currently working on
+     *
+     * @param array|object $reference
+     */
+    public function setHead($reference);
+
+    /**
+     * Returns the current branch or tag you are working on
+     *
+     * @return object $reference
+     */
+    public function getHead();
+
+    /**
      * Return branches
      *
      * @return array list of branch names

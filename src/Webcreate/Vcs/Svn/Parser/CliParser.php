@@ -7,11 +7,11 @@
 
 namespace Webcreate\Vcs\Svn\Parser;
 
+use Webcreate\Vcs\Common\VcsFileInfo;
 use Webcreate\Vcs\Common\Status;
 use Webcreate\Vcs\Common\AbstractClient;
 use Webcreate\Vcs\Svn;
 use Webcreate\Vcs\Common\Commit;
-use Webcreate\Vcs\Common\FileInfo;
 use Webcreate\Vcs\Common\Parser\ParserInterface;
 
 /**
@@ -91,7 +91,8 @@ class CliParser implements ParserInterface
             if (preg_match('/([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])\s(.*)/', $line, $matches)) {
                 list($fullmatch, $x, , , , , , , $file) = $matches;
 
-                $file = new FileInfo($file, FileInfo::FILE, null, $x);
+                $file = new VcsFileInfo($file, $this->getClient()->getHead());
+                $file->setStatus($x);
 
                 $retval[] = $file;
             }
@@ -117,19 +118,22 @@ class CliParser implements ParserInterface
             return $output;
         }
 
+        $head = $this->getClient()->getHead();
+
         $sxml = simplexml_load_string($output);
 
         $retval = array();
         foreach($sxml->xpath('//entry') as $item) {
-            $file = new FileInfo(
-                    (string) $item->name,
-                    (string) $item->attributes()->kind,
-                    new Commit(
-                            (string) $item->commit->attributes()->revision,
-                            new \DateTime((string) $item->commit->date),
-                            (string) $item->commit->author
-                    )
-            );
+            $filename = (string) $item->name;
+            $kind     = (string) $item->attributes()->kind;
+            $revision = (string) $item->commit->attributes()->revision;
+            $date     = (string) $item->commit->date;
+            $author   = (string) $item->commit->author;
+
+            $commit = new Commit($revision, new \DateTime($date), $author);
+            
+            $file = new VcsFileInfo($filename, $head, $kind);
+            $file->setCommit($commit);
 
             $retval[] = $file;
         }
@@ -155,12 +159,12 @@ class CliParser implements ParserInterface
 
         $retval = array();
         foreach($sxml->logentry as $entry) {
-            $retval[] = new Commit(
-                    (string) $entry->attributes()->revision,
-                    new \DateTime((string)  $entry->date),
-                    (string) $entry->author,
-                    (string) $entry->msg
-            );
+            $revision = (string) $entry->attributes()->revision;
+            $date     = (string) $entry->date;
+            $author   = (string) $entry->author;
+            $message  = (string) $entry->msg;
+
+            $retval[] = new Commit($revision, new \DateTime($date), $author, $message);
         }
 
         return $retval;
@@ -206,12 +210,8 @@ class CliParser implements ParserInterface
                     break;
             }
 
-            $file = new FileInfo(
-                    $path,
-                    FileInfo::FILE,
-                    null,
-                    $status
-            );
+            $file = new VcsFileInfo($path, $this->getClient()->getHead());
+            $file->setStatus($status);
 
             $retval[] = $file;
         }

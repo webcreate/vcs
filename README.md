@@ -1,6 +1,6 @@
 # PHP interface for version control systems
 
-Webcreate/Vcs is an interface for PHP for working with various
+Webcreate\Vcs is an interface for PHP for working with various
 version control system, like SVN, GIT, etc.
 
 [![Build Status](https://secure.travis-ci.org/webcreate/vcs.png?branch=master)](https://travis-ci.org/webcreate/vcs)
@@ -47,11 +47,11 @@ $git = new Git('https://someserver/somerepo.git');
 // Retrieve the 20 latest commits for master
 $result = $git->log('.', null, 20);
 foreach($result as $commit) {
-    $date        = $commit->getDate();
-    $author      = $commit->getAuthor();
-    $revision    = $commit->getRevision();
-    $message     = $commit->getMessage();
+    $date        = $commit->getDate();      // returns \DateTime instance
+    $author      = $commit->getAuthor();    // returns "John Doe"
+    $revision    = $commit->getRevision();  // returns "1a410efbd13591db07496601ebc7a059dd55cfe9"
+    $message     = $commit->getMessage();   // returns "commit message"
 }
 ```
 
-Full documentation is available in [docs/](docs/).
+Full documentation is available in [docs/](https://github.com/webcreate/vcs/tree/master/docs).
