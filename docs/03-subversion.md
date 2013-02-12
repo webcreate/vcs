@@ -15,7 +15,7 @@ $svn = new Svn('svn://someserver/somerepo');
 $svn->setCredentials('user', 'userpass');
 ```
 
-If your subversion exacutable isn't located in /usr/bin you can specify
+If your subversion exacutable isn't located in `/usr/bin` you can specify
 this via the adapter:
 
 ``` php

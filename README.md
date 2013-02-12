@@ -1,7 +1,7 @@
 # PHP interface for version control systems
 
 Webcreate\Vcs is an interface for PHP for working with various
-version control system, like SVN, GIT, etc.
+version control systems, like SVN, GIT, etc.
 
 [![Build Status](https://secure.travis-ci.org/webcreate/vcs.png?branch=master)](https://travis-ci.org/webcreate/vcs)
 

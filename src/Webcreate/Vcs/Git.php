@@ -128,8 +128,13 @@ class Git extends AbstractGit implements VcsInterface
      */
     public function export($path, $dest)
     {
-        $this->setCwd($dest);
-        $this->checkout();
+        $head = $this->getHead();
+        $branch = $head->getName();
+        if ($head->getType() === Reference::TAG) {
+            $branch = 'refs/tags/' . $head->getName();
+        }
+
+        $result = $this->execute('clone', array('-b' => (string) $branch, '--depth=1', $this->url, $dest));
 
         $this->isTemporary = false;
 

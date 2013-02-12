@@ -47,6 +47,17 @@ class GitTest extends AbstractTest
         );
     }
 
+    public function testGitExportRemovesGitFolder()
+    {
+        // we need to make sure the destination exists
+        $filesystem = new Filesystem();
+        $filesystem->mkdir($this->exportDir);
+
+        $this->client->export('', $this->exportDir);
+
+        $this->assertFileNotExists($this->exportDir . '/.git');
+    }
+
     public function tearDown()
     {
         parent::tearDown();
