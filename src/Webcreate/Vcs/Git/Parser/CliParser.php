@@ -112,6 +112,10 @@ class CliParser implements ParserInterface
             return $output;
         }
 
+        if ('' === trim($output)) {
+            return array();
+        }
+
         $lines = explode("\n", rtrim($output));
 
         $retval = array();

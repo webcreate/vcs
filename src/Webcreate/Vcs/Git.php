@@ -281,4 +281,31 @@ class Git extends AbstractGit implements VcsInterface
 
         return $tags;
     }
+
+    /**
+     * Git push
+     *
+     * @param string $remote
+     * @return string
+     */
+    public function push($remote = 'origin')
+    {
+        try {
+            return $this->execute('push', array('--porcelain' => true, $remote));
+        } catch(\RuntimeException $e) {
+            // ignore output on stderr: it contains
+            // progress information, for example about hooks
+        }
+    }
+
+    /**
+     * Git pull
+     *
+     * @param string $remote
+     * @return string
+     */
+    public function pull($remote = 'origin')
+    {
+        return $this->execute('pull', array($remote));
+    }
 }
