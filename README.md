@@ -5,6 +5,8 @@ version control systems, like SVN, GIT, etc.
 
 [![Build Status](https://secure.travis-ci.org/webcreate/vcs.png?branch=master)](https://travis-ci.org/webcreate/vcs)
 
+Webcreate\Vcs was created as part of [Conveyor](http://conveyordeploy.com).
+
 Installation / Usage
 --------------------
 

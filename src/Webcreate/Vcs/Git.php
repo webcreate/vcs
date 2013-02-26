@@ -290,6 +290,10 @@ class Git extends AbstractGit implements VcsInterface
      */
     public function push($remote = 'origin')
     {
+        if (!$this->hasCheckout) {
+            throw new \RuntimeException('This operation requires an active checkout.');
+        }
+
         try {
             return $this->execute('push', array('--porcelain' => true, $remote));
         } catch(\RuntimeException $e) {
@@ -306,6 +310,10 @@ class Git extends AbstractGit implements VcsInterface
      */
     public function pull($remote = 'origin')
     {
+        if (!$this->hasCheckout) {
+            throw new \RuntimeException('This operation requires an active checkout.');
+        }
+
         return $this->execute('pull', array($remote));
     }
 }
