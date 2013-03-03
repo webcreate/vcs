@@ -316,4 +316,23 @@ class Git extends AbstractGit implements VcsInterface
 
         return $this->execute('pull', array($remote));
     }
+
+    /**
+     * (non-PHPdoc)
+     * @see Webcreate\Vcs.VcsInterface::revisionCompare()
+     */
+    public function revisionCompare($revision1, $revision2)
+    {
+        if ($revision1 == $revision2) {
+            return 0;
+        } else {
+            $result = $this->execute('log', array('--pretty=' => 'oneline', sprintf('%s..%s', $revision1, $revision2)));
+
+            if ('' === $result) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
 }

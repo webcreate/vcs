@@ -38,6 +38,13 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     abstract public function existingPathProvider();
     abstract public function existingSubfolderProvider();
 
+    /**
+     * Should provide atleast two revisions sorted new to old
+     *
+     * @return array()
+     */
+    abstract public function existingRevisionProvider();
+
     public function testLs()
     {
         $result = $this->client->ls('');
@@ -248,5 +255,14 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     public function testSwitchingToDifferentBranch()
     {
         $result = $this->client->setHead(new Reference('feature1'));
+    }
+
+    public function testRevisionCompare()
+    {
+        list ($newerRevision, $olderRevision) = $this->existingRevisionProvider();
+
+        $this->assertEquals(1, $this->client->revisionCompare($newerRevision, $olderRevision));
+        $this->assertEquals(0, $this->client->revisionCompare($olderRevision, $olderRevision));
+        $this->assertEquals(-1, $this->client->revisionCompare($olderRevision, $newerRevision));
     }
 }

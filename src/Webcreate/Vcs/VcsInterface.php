@@ -121,4 +121,15 @@ interface VcsInterface
      * @param bool   $summary
      */
     public function diff($oldPath, $newPath, $oldRevision = 'HEAD', $newRevision = 'HEAD', $summary = true);
+
+    /**
+     * Compares two revisions
+     *
+     * @param string $revision1
+     * @param string $revision2
+     * @return int returns 1 when revision1 is greater then revision1,
+     *                     -1 when revision1 is smaller then revision2 and
+     *                     0 when they are equal
+     */
+    public function revisionCompare($revision1, $revision2);
 }

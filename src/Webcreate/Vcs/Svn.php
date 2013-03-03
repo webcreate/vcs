@@ -184,4 +184,22 @@ class Svn extends AbstractSvn implements VcsInterface
 
         return $tags;
     }
+
+    /**
+     * (non-PHPdoc)
+     * @see Webcreate\Vcs.VcsInterface::revisionCompare()
+     */
+    public function revisionCompare($revision1, $revision2)
+    {
+        $revision1 = (int) $revision1;
+        $revision2 = (int) $revision2;
+
+        if ($revision1 > $revision2) {
+            return 1;
+        } elseif ($revision1 < $revision2) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 }

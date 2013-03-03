@@ -47,6 +47,27 @@ class GitTest extends AbstractTest
         );
     }
 
+    public function existingRevisionProvider()
+    {
+        $client = $this->client;
+
+        $tmpdir = $this->tmpdir . '/' . uniqid();
+
+        mkdir($tmpdir);
+
+        $client->checkout($tmpdir);
+
+        $touch = $tmpdir . '/test1.txt';
+        file_put_contents($touch, 'sdfsd');
+
+        $client->add('test1.txt');
+        $client->commit('added test1.txt');
+
+        $log = $client->log('');
+
+        return array($log[0]->getRevision(), $log[1]->getRevision());
+    }
+
     public function testGitExportRemovesGitFolder()
     {
         // we need to make sure the destination exists
