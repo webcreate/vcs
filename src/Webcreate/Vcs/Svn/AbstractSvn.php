@@ -191,6 +191,10 @@ abstract class AbstractSvn extends AbstractClient
             $path = '/';
         }
 
+        if (null === $path) {
+            $path = '/';
+        }
+
         if (is_string($path)) {
             $path = new VcsFileInfo($path, array($head->getName(), $head->getType()));
         }

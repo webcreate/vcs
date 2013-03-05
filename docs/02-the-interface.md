@@ -17,6 +17,7 @@ Defined methods:
 * checkout
 * add
 * commit
+* revisionCompare
 
 The methods are a mix between the commands for subversion and git. They should
 look quite familiar to you when you've worked with both systems before.

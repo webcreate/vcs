@@ -229,15 +229,22 @@ class Git extends AbstractGit implements VcsInterface
      *     usage: git diff [--no-index] <path> <path>
      */
     public function diff($oldPath, $newPath, $oldRevision = 'HEAD',
-            $newRevision = 'HEAD', $summary = true)
+        $newRevision = 'HEAD', $summary = true)
     {
-        return $this->execute('diff', array(
-                '--name-status' => $summary,
-                $oldRevision,
-                $newRevision,
-                $oldPath,
-                $newPath
-        ));
+        $arguments = array(
+            '--name-status' => $summary,
+            $oldRevision,
+            $newRevision,
+            $oldPath,
+            $newPath
+        );
+
+        // filter null arguments (useful for optional oldPath and newPath arguments)
+        $arguments = array_filter($arguments, function ($arg) {
+            return (null !== $arg);
+        });
+
+        return $this->execute('diff', $arguments);
     }
 
     /**
