@@ -125,6 +125,8 @@ class Git extends AbstractGit implements VcsInterface
     /**
      * (non-PHPdoc)
      * @see Webcreate\Vcs.VcsInterface::export()
+     *
+     * @todo remove .git folders from submodules
      */
     public function export($path, $dest)
     {
@@ -135,6 +137,8 @@ class Git extends AbstractGit implements VcsInterface
         }
 
         $result = $this->execute('clone', array('-b' => (string) $branch, '--depth=1', $this->url, $dest));
+
+        $result = $this->adapter->execute('submodule', array('update', '--init' => true, '--recursive' => true), $dest);
 
         $this->isTemporary = false;
 
