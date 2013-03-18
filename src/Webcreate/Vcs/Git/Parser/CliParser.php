@@ -42,6 +42,7 @@ class CliParser implements ParserInterface
     public function setClient(AbstractClient $client)
     {
         $this->client = $client;
+
         return $this;
     }
 
@@ -51,7 +52,7 @@ class CliParser implements ParserInterface
      */
     public function parse($command, array $arguments = array(), $output)
     {
-        switch($command) {
+        switch ($command) {
             case "log":
                 return $this->parseLogOutput($output, $arguments);
                 break;
@@ -69,8 +70,8 @@ class CliParser implements ParserInterface
     /**
      * Parses the log command output to Commit objects
      *
-     * @param string $output
-     * @param array  $arguments
+     * @param  string                                $output
+     * @param  array                                 $arguments
      * @return string|\Webcreate\Vcs\Common\Commit[]
      */
     public function parseLogOutput($output, array $arguments = array())
@@ -85,13 +86,13 @@ class CliParser implements ParserInterface
         $sxml = simplexml_load_string($xml);
 
         $retval = array();
-        foreach($sxml->logentry as $entry) {
+        foreach ($sxml->logentry as $entry) {
             $revision = (string) $entry->commit;
             $date     = (string) $entry->date;
             $author   = (string) $entry->author;
             $message  = (string) $entry->msg;
 
-            $retval[] = new Commit($revision, new \DateTime($date), $author, $message);
+            $retval[] = new Commit($revision, new \DateTime($date), $author, trim($message));
         }
 
         return $retval;
@@ -100,8 +101,8 @@ class CliParser implements ParserInterface
     /**
      * Parse the status command output to FileInfo objects
      *
-     * @param string $output
-     * @param array  $arguments
+     * @param  string                                  $output
+     * @param  array                                   $arguments
      * @throws \Exception
      * @return string|\Webcreate\Vcs\Common\FileInfo[]
      */
@@ -119,7 +120,7 @@ class CliParser implements ParserInterface
         $lines = explode("\n", rtrim($output));
 
         $retval = array();
-        foreach($lines as $line) {
+        foreach ($lines as $line) {
             if (preg_match('/([A-Z\?\s])([A-Z\?\s])\s(.*)( -> (.*))?/', $line, $matches)) {
                 list($fullmatch, $x, $y, $file) = $matches;
 
@@ -127,8 +128,7 @@ class CliParser implements ParserInterface
                 $file->setStatus($x);
 
                 $retval[] = $file;
-            }
-            else {
+            } else {
                 throw new \Exception('Unable to parse line "'. $line . '"');
             }
         }
@@ -139,10 +139,10 @@ class CliParser implements ParserInterface
     /**
      * Parse the diff command output to FileInfo objects
      *
-     * @param string $output
-     * @param array  $arguments
+     * @param  string                                  $output
+     * @param  array                                   $arguments
      * @throws \Exception
-     * @return string|\Webcreate\Vcs\Common\FileInfo[]
+     * @return string|\Webcreate\Vcs\Common\VcsFileInfo[]
      */
     public function parseDiffOutput($output, array $arguments = array())
     {
@@ -154,7 +154,7 @@ class CliParser implements ParserInterface
         $lines = explode("\n", rtrim($output));
 
         $retval = array();
-        foreach($lines as $line) {
+        foreach ($lines as $line) {
             if (preg_match('/([ACDMRTUXB])\s+(.*)?/', $line, $matches)) {
                 list($fullmatch, $x, $file) = $matches;
 
@@ -162,8 +162,7 @@ class CliParser implements ParserInterface
                 $file->setStatus($x);
 
                 $retval[] = $file;
-            }
-            else {
+            } else {
                 throw new \Exception('Unable to parse line "'. $line . '"');
             }
         }

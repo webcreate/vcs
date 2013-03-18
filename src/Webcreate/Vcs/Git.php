@@ -38,8 +38,7 @@ class Git extends AbstractGit implements VcsInterface
     {
         if (true === is_null($dest)) {
             $realdest = $this->cwd;
-        }
-        else {
+        } else {
             $realdest = $dest;
         }
 
@@ -59,7 +58,7 @@ class Git extends AbstractGit implements VcsInterface
     }
 
     /**
-     * @param string $path
+     * @param  string            $path
      * @throws \RuntimeException
      * @return string
      */
@@ -73,7 +72,7 @@ class Git extends AbstractGit implements VcsInterface
     }
 
     /**
-     * @param string $message
+     * @param  string            $message
      * @throws \RuntimeException
      * @return string
      */
@@ -87,7 +86,7 @@ class Git extends AbstractGit implements VcsInterface
     }
 
     /**
-     * @param string $message
+     * @param  null|string       $path
      * @throws \RuntimeException
      * @return string
      */
@@ -169,7 +168,7 @@ class Git extends AbstractGit implements VcsInterface
 
         $filelist = array();
         $entries = array();
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $log = $this->log(($path ? $path . '/' : '') . $file->getRelativePathname(), null, 1);
 
             $commit = reset($log);
@@ -204,6 +203,22 @@ class Git extends AbstractGit implements VcsInterface
                 '--pretty=' => self::PRETTY_FORMAT,
                 $path
                 )
+        );
+    }
+    /**
+     * (non-PHPdoc)
+     * @see Webcreate\Vcs.VcsInterface::changelog()
+     */
+    public function changelog($revision1, $revision2)
+    {
+        if (!$this->hasCheckout) {
+            $this->checkout();
+        }
+
+        return $this->execute('log', array(
+                '--pretty=' => self::PRETTY_FORMAT,
+                sprintf('%s^1..%s', $revision1, $revision2),
+            )
         );
     }
 
@@ -262,7 +277,7 @@ class Git extends AbstractGit implements VcsInterface
         $list = explode("\n", rtrim($retval));
 
         $branches = array();
-        foreach($list as $line) {
+        foreach ($list as $line) {
             list ($hash, $ref) = explode("\t", $line);
             $branches[] = new Reference(basename($ref), Reference::BRANCH, $hash);
         }
@@ -285,7 +300,7 @@ class Git extends AbstractGit implements VcsInterface
         $list = explode("\n", rtrim($retval));
 
         $tags = array();
-        foreach($list as $line) {
+        foreach ($list as $line) {
             list ($hash, $ref) = explode("\t", $line);
             $tags[] = new Reference(basename($ref), Reference::TAG, $hash);
         }
@@ -296,7 +311,8 @@ class Git extends AbstractGit implements VcsInterface
     /**
      * Git push
      *
-     * @param string $remote
+     * @param  string $remote
+     * @throws \RuntimeException
      * @return string
      */
     public function push($remote = 'origin')
@@ -307,7 +323,7 @@ class Git extends AbstractGit implements VcsInterface
 
         try {
             return $this->execute('push', array('--porcelain' => true, $remote));
-        } catch(\RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             // ignore output on stderr: it contains
             // progress information, for example about hooks
         }
@@ -316,7 +332,8 @@ class Git extends AbstractGit implements VcsInterface
     /**
      * Git pull
      *
-     * @param string $remote
+     * @param  string $remote
+     * @throws \RuntimeException
      * @return string
      */
     public function pull($remote = 'origin')

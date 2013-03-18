@@ -11,13 +11,17 @@ use Webcreate\Vcs\Common\Reference;
 use Webcreate\Vcs\Common\VcsFileInfo;
 use Webcreate\Vcs\Common\Status;
 use Symfony\Component\Filesystem\Filesystem;
+use Webcreate\Vcs\Test\Util\CommitGenerator;
 
 abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Webcreate\Vcs\VcsInterface
+     * @var \Webcreate\Vcs\VcsInterface
      */
     protected $client;
+
+    protected $checkoutDir;
+    protected $exportDir;
 
     public function setUp()
     {
@@ -79,13 +83,49 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     public function testLog($path)
     {
         $result = $this->client->log($path);
+
         $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\Commit', $result);
     }
 
     public function testLogForEmptyPath()
     {
         $result = $this->client->log('');
+
         $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\Commit', $result);
+    }
+
+    public function testChangelog()
+    {
+        $generator = new CommitGenerator($this->client);
+        $generator->generate($this->checkoutDir, array(
+            'First commit',
+            'Another commit',
+            'Awesome',
+            'Still going!',
+            'fixed issue #345'
+        ));
+
+        $log = $this->client->log('');
+        $revisions = array_map(function ($commit) {
+            return $commit->getRevision();
+        }, $log);
+
+        $result = $this->client->changelog($revisions[3], $revisions[1]);
+
+        $this->assertContainsOnlyInstancesOf('Webcreate\\Vcs\\Common\\Commit', $result);
+        $this->assertCount(3, $result);
+
+        $messages = array_map(function ($commit) {
+            return $commit->getMessage();
+        }, $result);
+
+        $expected = array(
+            'Still going!',
+            'Awesome',
+            'Another commit',
+        );
+
+        $this->assertEquals($expected, $messages);
     }
 
     /**
@@ -94,6 +134,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     public function testCat($path)
     {
         $result = $this->client->cat($path);
+
         $this->assertNotEmpty($result);
     }
 
@@ -143,7 +184,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
         $this->client->add(basename($tmpfile));
 
-        $result = $this->client->status();
+        $result = $this->client->status('');
 
         $file = new VcsFileInfo(basename($tmpfile), $this->client->getHead());
         $file->setStatus(Status::ADDED);
@@ -208,7 +249,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         // first we need a checkout
         $result = $this->client->checkout($this->checkoutDir);
 
-         // next modify a file
+        // next modify a file
         $tmpfile = $this->checkoutDir . '/' . $filename;
         file_put_contents($tmpfile, uniqid(null, true));
 
@@ -229,6 +270,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $file->setStatus(Status::MODIFIED);
         $expected = array($file);
 
+        $this->assertContainsOnlyInstancesOf('Webcreate\Vcs\Common\VcsFileInfo', $diff);
         $this->assertEquals($expected, $diff);
     }
 

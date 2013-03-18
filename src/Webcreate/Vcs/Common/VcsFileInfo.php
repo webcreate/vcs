@@ -24,9 +24,9 @@ class VcsFileInfo
     /**
      * Constructor.
      *
-     * @param string $file_name path to the file, for ex.: "path/to/file.txt"
-     * @param array  $reference
-     * @param string $kind      VcsFileInfo::FILE or VcsFileInfo::DIR
+     * @param string          $filename  path to the file, for ex.: "path/to/file.txt"
+     * @param array|Reference $reference
+     * @param string          $kind      VcsFileInfo::FILE or VcsFileInfo::DIR
      */
     public function __construct($filename, $reference, $kind = self::FILE)
     {

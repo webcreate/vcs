@@ -57,7 +57,7 @@ class CliParser implements ParserInterface
      */
     public function parse($command, array $arguments = array(), $output)
     {
-        switch($command) {
+        switch ($command) {
             case "status":
                 return $this->parseStatusOutput($output);
                 break;
@@ -78,16 +78,16 @@ class CliParser implements ParserInterface
     /**
      * Parse the status command output
      *
-     * @param string $output
+     * @param  string                           $output
      * @throws \Exception
-     * @return \Webcreate\Vcs\Common\FileInfo[]
+     * @return \Webcreate\Vcs\Common\VcsFileInfo[]
      */
     public function parseStatusOutput($output)
     {
         $lines = explode("\n", rtrim($output));
 
         $retval = array();
-        foreach($lines as $line) {
+        foreach ($lines as $line) {
             if (preg_match('/([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])([A-Z\?\s])\s(.*)/', $line, $matches)) {
                 list($fullmatch, $x, , , , , , , $file) = $matches;
 
@@ -95,8 +95,7 @@ class CliParser implements ParserInterface
                 $file->setStatus($x);
 
                 $retval[] = $file;
-            }
-            else {
+            } else {
                 throw new \Exception('Unable to parse line "'. $line . '"');
             }
         }
@@ -107,8 +106,8 @@ class CliParser implements ParserInterface
     /**
      * Parse the Xml result from Subversion
      *
-     * @param string $output
-     * @param array  $arguments
+     * @param  string $output
+     * @param  array  $arguments
      * @return array
      */
     public function parseListOutput($output, array $arguments = array())
@@ -123,7 +122,7 @@ class CliParser implements ParserInterface
         $sxml = simplexml_load_string($output);
 
         $retval = array();
-        foreach($sxml->xpath('//entry') as $item) {
+        foreach ($sxml->xpath('//entry') as $item) {
             $filename = (string) $item->name;
             $kind     = (string) $item->attributes()->kind;
             $revision = (string) $item->commit->attributes()->revision;
@@ -131,7 +130,7 @@ class CliParser implements ParserInterface
             $author   = (string) $item->commit->author;
 
             $commit = new Commit($revision, new \DateTime($date), $author);
-            
+
             $file = new VcsFileInfo($filename, $head, $kind);
             $file->setCommit($commit);
 
@@ -144,8 +143,8 @@ class CliParser implements ParserInterface
     /**
      * Parse the Xml result from Subversion
      *
-     * @param string $output
-     * @param array  $arguments
+     * @param  string $output
+     * @param  array  $arguments
      * @return array
      */
     protected function parseLogOutput($output, array $arguments = array())
@@ -158,13 +157,13 @@ class CliParser implements ParserInterface
         $sxml = simplexml_load_string($output);
 
         $retval = array();
-        foreach($sxml->logentry as $entry) {
+        foreach ($sxml->logentry as $entry) {
             $revision = (string) $entry->attributes()->revision;
             $date     = (string) $entry->date;
             $author   = (string) $entry->author;
             $message  = (string) $entry->msg;
 
-            $retval[] = new Commit($revision, new \DateTime($date), $author, $message);
+            $retval[] = new Commit($revision, new \DateTime($date), $author, trim($message));
         }
 
         return $retval;
@@ -173,8 +172,8 @@ class CliParser implements ParserInterface
     /**
      * Parse the Xml result from Subversion
      *
-     * @param string $xml
-     * @param array  $arguments
+     * @param  string $output
+     * @param  array  $arguments
      * @return array
      */
     protected function parseDiffOutput($output, array $arguments = array())
@@ -192,13 +191,13 @@ class CliParser implements ParserInterface
         $sxml = simplexml_load_string($output);
 
         $retval = array();
-        foreach($sxml->xpath('//path') as $item) {
+        foreach ($sxml->xpath('//path') as $item) {
             $url = (string) $item;
             $path = ltrim(str_replace($this->client->getSvnUrl(''), '', $url), '/');
 
-            // @todo move to a Mapper class
+            // @todo move to a Mapper class?
             $status = (string) $item->attributes()->item;
-            switch($status) {
+            switch ($status) {
                 case "modified":
                     $status = Status::MODIFIED;
                     break;

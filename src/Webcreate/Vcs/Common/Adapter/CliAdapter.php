@@ -105,24 +105,26 @@ class CliAdapter implements AdapterInterface
     /**
      * Set parser
      *
-     * @param ParserInterface $parser
+     * @param  ParserInterface                          $parser
      * @return \Webcreate\Vcs\Common\Adapter\CliAdapter
      */
     public function setParser(ParserInterface $parser)
     {
         $this->parser = $parser;
+
         return $this;
     }
 
     /**
      * Set global arguments for binary
      *
-     * @param array $arguments
+     * @param  array                                    $arguments
      * @return \Webcreate\Vcs\Common\Adapter\CliAdapter
      */
     public function setGlobalArguments(array $arguments)
     {
         $this->globalArguments = $arguments;
+
         return $this;
     }
 
@@ -139,12 +141,13 @@ class CliAdapter implements AdapterInterface
     /**
      * Set the executable path
      *
-     * @param string $bin
+     * @param  string                                   $bin
      * @return \Webcreate\Vcs\Common\Adapter\CliAdapter
      */
     public function setExecutable($bin)
     {
         $this->bin = $bin;
+
         return $this;
     }
 
@@ -183,9 +186,9 @@ class CliAdapter implements AdapterInterface
      * Delegate output to output parser when a parser is set,
      * otherwise returns the raw output
      *
-     * @param string $command
-     * @param array  $arguments
-     * @param string $output
+     * @param  string $command
+     * @param  array  $arguments
+     * @param  string $output
      * @return mixed
      */
     protected function parse($command, array $arguments = array(), $output)

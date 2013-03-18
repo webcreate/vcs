@@ -57,7 +57,7 @@ class WorkingCopy
     /**
      * Add file or directory to Svn
      *
-     * @param string $path
+     * @param  string            $path
      * @throws NotFoundException
      */
     public function add($path)
@@ -68,7 +68,7 @@ class WorkingCopy
 
         $result = $this->status($path);
 
-        foreach($result as $fileInfo) {
+        foreach ($result as $fileInfo) {
             if ($fileInfo->getStatus() === Status::UNVERSIONED) {
                 $this->svn->execute('add', array($fileInfo->getPathname()), $this->cwd);
             }
@@ -79,6 +79,7 @@ class WorkingCopy
      * Commit modified and/or added files to Svn
      *
      * @param string $message commit message
+     * @return string
      */
     public function commit($message)
     {
@@ -88,7 +89,7 @@ class WorkingCopy
     /**
      * Get the status of the working copy
      *
-     * @param string $path
+     * @param  string                              $path
      * @return \Webcreate\Vcs\Common\VcsFileInfo[]
      */
     public function status($path = null)

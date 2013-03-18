@@ -68,7 +68,7 @@ abstract class AbstractGit extends AbstractClient
     /**
      * Sets the current working directory
      *
-     * @param string $cwd
+     * @param  string                         $cwd
      * @return \Webcreate\Vcs\Git\AbstractGit
      */
     public function setCwd($cwd)
@@ -79,8 +79,7 @@ abstract class AbstractGit extends AbstractClient
         if (is_null($cwd)) {
             $this->cwd = sys_get_temp_dir() . '/' . uniqid('git');
             $this->isTemporary = true;
-        }
-        else {
+        } else {
             if (is_dir($cwd)) {
                 if (is_dir($cwd . '/.git')) {
                     $this->hasCheckout = true;
@@ -88,14 +87,15 @@ abstract class AbstractGit extends AbstractClient
             }
             $this->cwd = $cwd;
         }
+
         return $this;
     }
 
     /**
      * Execute GIT command
      *
-     * @param string $command
-     * @param array  $arguments
+     * @param  string $command
+     * @param  array  $arguments
      * @return string
      */
     protected function execute($command, array $arguments = array())
@@ -114,5 +114,3 @@ abstract class AbstractGit extends AbstractClient
         }
     }
 }
-
-

@@ -48,12 +48,13 @@ class Commit
     /**
      * Set commit message
      *
-     * @param strign $message
+     * @param  string                       $message
      * @return \Webcreate\Vcs\Common\Commit
      */
     public function setMessage($message)
     {
         $this->message = $message;
+
         return $this;
     }
 
@@ -70,18 +71,19 @@ class Commit
     /**
      * Set author
      *
-     * @param string $author
+     * @param  string                       $author
      * @return \Webcreate\Vcs\Common\Commit
      */
     public function setAuthor($author)
     {
         $this->author = $author;
+
         return $this;
     }
 
     /**
      * Return commit date
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate()
     {
@@ -91,12 +93,13 @@ class Commit
     /**
      * Set commit date
      *
-     * @param \DateTime $date
+     * @param  \DateTime                    $date
      * @return \Webcreate\Vcs\Common\Commit
      */
     public function setDate(\DateTime $date)
     {
         $this->date = $date;
+
         return $this;
     }
 
@@ -113,12 +116,13 @@ class Commit
     /**
      * Set revision number/ID
      *
-     * @param unknown_type $revision
+     * @param  string                       $revision
      * @return \Webcreate\Vcs\Common\Commit
      */
     public function setRevision($revision)
     {
         $this->revision = $revision;
+
         return $this;
     }
 }

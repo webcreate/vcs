@@ -64,17 +64,17 @@ interface VcsInterface
     public function commit($message);
 
     /**
-     * Retuns the status of the working copy
+     * Returns the status of the working copy
      *
-     * @param string $path
+     * @param string|null $path optional: a specific path to return the status for
      */
-    public function status($path);
+    public function status($path = null);
 
     /**
      * Imports a directory into the vcs
      *
      * @param string $src     path that needs to be imported to the vcs
-     * @param string $path    destionation path in the vcs
+     * @param string $path    destination path in the vcs
      * @param string $message commit message
      */
     public function import($src, $path, $message);
@@ -88,25 +88,36 @@ interface VcsInterface
     public function export($path, $dest);
 
     /**
-     * List files and directories
+     * Lists files and directories
      *
-     * @param string $path path in the vcs
+     * @param  string $path path in the vcs
      * @return array
      */
     public function ls($path);
 
     /**
-     * Retrieve commit log
+     * Returns a list of commits for a specific path
      *
-     * @param string $path path in the vcs
-     * @return array
+     * @see \Webcreate\Vcs\Common\Commit
+     *
+     * @param  string                         $path path in the vcs
+     * @return \Webcreate\Vcs\Common\Commit[]
      */
     public function log($path);
 
     /**
+     * Returns a list of commits between two revisions
+     *
+     * @param string $revision1 the oldest revision
+     * @param string $revision2 the newest revision
+     * @return
+     */
+    public function changelog($revision1, $revision2);
+
+    /**
      * Retrieve contents for a file
      *
-     * @param string $path path in the vcs
+     * @param  string $path path in the vcs
      * @return string
      */
     public function cat($path);
@@ -118,16 +129,18 @@ interface VcsInterface
      * @param string $newPath
      * @param string $oldRevision
      * @param string $newRevision
-     * @param bool   $summary
+     * @param bool   $summary     when true only the filenames are listed,
+     *                            otherwise the diff of the content is included
+     * @return \Webcreate\Vcs\Common\VcsFileInfo[]
      */
     public function diff($oldPath, $newPath, $oldRevision = 'HEAD', $newRevision = 'HEAD', $summary = true);
 
     /**
      * Compares two revisions
      *
-     * @param string $revision1
-     * @param string $revision2
-     * @return int returns 1 when revision1 is greater then revision1,
+     * @param  string $revision1
+     * @param  string $revision2
+     * @return int    returns 1 when revision1 is greater then revision1,
      *                     -1 when revision1 is smaller then revision2 and
      *                     0 when they are equal
      */

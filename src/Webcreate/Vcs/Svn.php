@@ -22,6 +22,9 @@ use Webcreate\Vcs\Svn\AbstractSvn;
  */
 class Svn extends AbstractSvn implements VcsInterface
 {
+    /**
+     * @var \Webcreate\Vcs\Svn\WorkingCopy
+     */
     protected $wc;
 
     /**
@@ -38,7 +41,7 @@ class Svn extends AbstractSvn implements VcsInterface
     /**
      * Add to version control
      *
-     * @param string $path
+     * @param  string            $path
      * @throws \RuntimeException
      * @return string
      */
@@ -122,6 +125,19 @@ class Svn extends AbstractSvn implements VcsInterface
                 )
         );
     }
+    /**
+     * (non-PHPdoc)
+     * @see Webcreate\Vcs.VcsInterface::changelog()
+     */
+    public function changelog($revision1, $revision2)
+    {
+        return $this->execute('log', array(
+                '-r' => sprintf('%s:%s', $revision2, $revision1),
+                '--xml' => true,
+                $this->getSvnUrl($this->getHead())
+            )
+        );
+    }
 
     /**
      * (non-PHPdoc)
@@ -162,7 +178,7 @@ class Svn extends AbstractSvn implements VcsInterface
         $branches = array();
         $branches[] = new Reference('trunk', Reference::BRANCH, $logTrunk->getRevision());
 
-        foreach($result as $fileinfo) {
+        foreach ($result as $fileinfo) {
             $branches[] = new Reference($fileinfo->getFilename(), Reference::BRANCH, $fileinfo->getCommit()->getRevision());
         }
 
@@ -178,7 +194,7 @@ class Svn extends AbstractSvn implements VcsInterface
         $result = $this->execute('list', array('--xml' => true, $this->getUrl() . '/' . $this->basePaths['tags']));
 
         $tags = array();
-        foreach($result as $fileinfo) {
+        foreach ($result as $fileinfo) {
             $tags[] = new Reference($fileinfo->getFilename(), Reference::TAG, $fileinfo->getCommit()->getRevision());
         }
 

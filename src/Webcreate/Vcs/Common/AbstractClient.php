@@ -52,7 +52,7 @@ abstract class AbstractClient
     /**
      * Sets the adapter
      *
-     * @param AdapterInterface $adapter
+     * @param  AdapterInterface                     $adapter
      * @return \Webcreate\Vcs\Common\AbstractClient
      */
     public function setAdapter(AdapterInterface $adapter)
@@ -60,6 +60,7 @@ abstract class AbstractClient
         $adapter->setClient($this);
 
         $this->adapter = $adapter;
+
         return $this;
     }
 
@@ -76,12 +77,13 @@ abstract class AbstractClient
     /**
      * Sets the VCS url
      *
-     * @param string $url
+     * @param  string                               $url
      * @return \Webcreate\Vcs\Common\AbstractClient
      */
     public function setUrl($url)
     {
         $this->url = $url;
+
         return $this;
     }
 
@@ -98,7 +100,7 @@ abstract class AbstractClient
     /**
      * Set HEAD
      *
-     * @param array|Reference $reference
+     * @param  array|Reference                      $reference
      * @return \Webcreate\Vcs\Common\AbstractClient
      */
     public function setHead($reference)
@@ -109,6 +111,7 @@ abstract class AbstractClient
             list ($name, $type) = $reference;
             $this->head = new Reference($name, $type);
         }
+
         return $this;
     }
 

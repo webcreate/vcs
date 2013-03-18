@@ -85,8 +85,8 @@ abstract class AbstractSvn extends AbstractClient
     /**
      * Set username and password
      *
-     * @param string $username
-     * @param string $password
+     * @param  string                         $username
+     * @param  string                         $password
      * @return \Webcreate\Vcs\Svn\AbstractSvn
      */
     public function setCredentials($username, $password)
@@ -120,12 +120,13 @@ abstract class AbstractSvn extends AbstractClient
     /**
      * Set output callback
      *
-     * @param \Closure $output
+     * @param  \Closure                       $output
      * @return \Webcreate\Vcs\Svn\AbstractSvn
      */
     public function setOutput($output)
     {
         $this->output = $output;
+
         return $this;
     }
 
@@ -142,16 +143,17 @@ abstract class AbstractSvn extends AbstractClient
 
         if ($this->username) $args['--username'] = $this->username;
         if ($this->password) $args['--password'] = $this->password;
-
         return $args;
     }
 
     /**
      * Execute SVN command
      *
-     * @param string $command
-     * @param array  $arguments
-     * @param string $cwd
+     * @param  string $command
+     * @param  array $arguments
+     * @param  string $cwd
+     * @throws \Webcreate\Vcs\Exception\NotFoundException
+     * @throws \Exception
      * @return string
      */
     public function execute($command, array $arguments = array(), $cwd = null)
@@ -160,8 +162,7 @@ abstract class AbstractSvn extends AbstractClient
 
         try {
             $result = $this->adapter->execute($command, $arguments, $cwd);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             // @todo move to a generic error handler? Something similar to the ParserInterface
             if (preg_match('/svn: URL \'[^\']+\' non-existent in that revision/', $e->getMessage())) {
                 throw new NotFoundException($e->getMessage());
@@ -179,7 +180,7 @@ abstract class AbstractSvn extends AbstractClient
     /**
      * Returns url for a specific path
      *
-     * @param string|VcsFileInfo $path
+     * @param  string|VcsFileInfo $path
      * @return string
      */
     public function getSvnUrl($path)
@@ -204,8 +205,7 @@ abstract class AbstractSvn extends AbstractClient
 
             if ('trunk' === $branchName) {
                 $basePath = $this->basePaths['trunk'];
-            }
-            else {
+            } else {
                 $basePath = $this->basePaths['branches'] . '/' . $branchName;
             }
         } elseif ($path->inTag()) {
@@ -228,8 +228,8 @@ abstract class AbstractSvn extends AbstractClient
     /**
      * Sort function for sorting entries
      *
-     * @param array $item1
-     * @param array $item2
+     * @param  array  $item1
+     * @param  array  $item2
      * @return number
      */
     protected function cmpSvnEntriesByKind(array $item1, array $item2)

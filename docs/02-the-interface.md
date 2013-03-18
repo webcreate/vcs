@@ -10,6 +10,7 @@ Defined methods:
 * branches
 * tags
 * log
+* changelog
 * diff
 * import
 * export
@@ -18,6 +19,8 @@ Defined methods:
 * add
 * commit
 * revisionCompare
+* getHead
+* setHead
 
 The methods are a mix between the commands for subversion and git. They should
 look quite familiar to you when you've worked with both systems before.

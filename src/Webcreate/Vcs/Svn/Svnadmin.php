@@ -69,7 +69,7 @@ class Svnadmin
     /**
      * Destroys a specific repository
      *
-     * @param string $name
+     * @param  string                    $name
      * @throws \InvalidArgumentException
      */
     public function destroy($name)
@@ -88,8 +88,8 @@ class Svnadmin
      * Creates a backup of svnserve.conf and links
      * a global svnserve.conf in the repository
      *
-     * @param string $name         name of the repository
-     * @param string $svnserveFile full path to the global svnserve.conf
+     * @param  string                 $name         name of the repository
+     * @param  string                 $svnserveFile full path to the global svnserve.conf
      * @throws ProcessFailedException
      * @throws \RuntimeException
      */
@@ -103,7 +103,7 @@ class Svnadmin
     /**
      * Returns repository path
      *
-     * @param string $name
+     * @param  string $name
      * @return string
      */
     protected function getReposDir($name)
@@ -114,8 +114,8 @@ class Svnadmin
     /**
      * Executes a svnadmin command
      *
-     * @param string $command
-     * @param array  $arguments
+     * @param  string                 $command
+     * @param  array                  $arguments
      * @throws ProcessFailedException
      * @throws \RuntimeException
      * @return string
