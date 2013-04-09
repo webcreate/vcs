@@ -175,8 +175,6 @@ class CliAdapter implements AdapterInterface
 
         if ($this->cli->execute($commandline, null, $cwd) <> 0) {
             throw new ProcessFailedException($this->cli->getProcess());
-        } elseif ($message = $this->cli->getErrorOutput()) {
-            throw new \RuntimeException($message);
         }
 
         return $this->parse($command, $arguments, $this->cli->getOutput());

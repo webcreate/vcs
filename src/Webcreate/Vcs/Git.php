@@ -44,9 +44,6 @@ class Git extends AbstractGit implements VcsInterface
 
         $head = $this->getHead();
         $branch = $head->getName();
-        if ($head->getType() === Reference::TAG) {
-            $branch = 'refs/tags/' . $head->getName();
-        }
 
         $result = $this->execute('clone', array('-b' => (string) $branch, $this->url, $realdest));
 
@@ -125,15 +122,13 @@ class Git extends AbstractGit implements VcsInterface
      * (non-PHPdoc)
      * @see Webcreate\Vcs.VcsInterface::export()
      *
+     * @todo handle $path parameter
      * @todo remove .git folders from submodules
      */
     public function export($path, $dest)
     {
         $head = $this->getHead();
         $branch = $head->getName();
-        if ($head->getType() === Reference::TAG) {
-            $branch = 'refs/tags/' . $head->getName();
-        }
 
         $result = $this->execute('clone', array('-b' => (string) $branch, '--depth=1', $this->url, $dest));
 
