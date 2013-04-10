@@ -21,6 +21,6 @@
         "symfony/process": ">=v2.1.2",
         "symfony/finder": ">=v2.1.2",
         "symfony/filesystem": ">=v2.1.2",
-        "webcreate/util": "dev-master"
+        "webcreate/util": "1.*"
     }
 }
