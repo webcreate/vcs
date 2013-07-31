@@ -44,6 +44,11 @@ abstract class AbstractGit extends AbstractClient
     /**
      * @var bool
      */
+    protected $hasClone = false;
+
+    /**
+     * @var bool
+     */
     protected $isTemporary = false;
 
     /**
@@ -56,7 +61,9 @@ abstract class AbstractGit extends AbstractClient
     public function __construct($url, AdapterInterface $adapter = null, $cwd = null)
     {
         if (null === $adapter) {
-            $adapter = new CliAdapter('/usr/bin/git', new Cli(), new CliParser());
+            $cli = new Cli();
+            $cli->setTimeout(600);
+            $adapter = new CliAdapter('/usr/bin/git', $cli, new CliParser());
         }
 
         parent::__construct($url, $adapter);
@@ -74,6 +81,7 @@ abstract class AbstractGit extends AbstractClient
     public function setCwd($cwd)
     {
         $this->hasCheckout = false;
+        $this->hasClone = false;
         $this->isTemporary = false;
 
         if (is_null($cwd)) {
@@ -82,7 +90,7 @@ abstract class AbstractGit extends AbstractClient
         } else {
             if (is_dir($cwd)) {
                 if (is_dir($cwd . '/.git')) {
-                    $this->hasCheckout = true;
+                    $this->hasClone = true;
                 }
             }
             $this->cwd = $cwd;
@@ -91,16 +99,30 @@ abstract class AbstractGit extends AbstractClient
         return $this;
     }
 
+    public function setHead($reference)
+    {
+        parent::setHead($reference);
+
+        // branch might have changed, so if we had a checkout it could be out of sync
+        // setting this to false will get it back in sync
+        $this->hasCheckout = false;
+    }
+
     /**
      * Execute GIT command
      *
      * @param  string $command
-     * @param  array  $arguments
+     * @param  array $arguments
+     * @param string|null $cwd
      * @return string
      */
-    protected function execute($command, array $arguments = array())
+    protected function execute($command, array $arguments = array(), $cwd = null)
     {
-        return $this->adapter->execute($command, $arguments, $this->cwd);
+        if (null === $cwd) {
+            $cwd = $this->cwd;
+        }
+
+        return $this->adapter->execute($command, $arguments, $cwd);
     }
 
     /**

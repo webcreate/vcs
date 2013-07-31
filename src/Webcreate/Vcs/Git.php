@@ -30,12 +30,45 @@ class Git extends AbstractGit implements VcsInterface
     const PRETTY_FORMAT = '<logentry><commit>%H</commit>%n<date>%aD</date>%n<author>%an</author>%n<msg><![CDATA[%B]]></msg></logentry>';
 
     /**
+     * @var array remote tags cache
+     */
+    private $tags;
+
+    /**
+     * @var array remote branches cache
+     */
+    private $branches;
+
+    /** @var bool ensures that we only fetch once */
+    private $isFetched = false;
+
+    public function cloneRepository($dest = null)
+    {
+        $temporary = $this->isTemporary;
+
+        $realdest = (true === is_null($dest) ? $this->cwd : $dest);
+        $branch = $this->getHead()->getName();
+
+        $result = $this->execute('clone', array('-b' => (string) $branch, $this->url, $realdest));
+
+        $this->setCwd($realdest);
+
+        // the setCwd resets the isTemporary flag, this keeps it correct
+        $this->isTemporary = $temporary;
+
+        // a clone implies a fetch
+        $this->isFetched = true;
+    }
+
+    /**
      * Perform a clone operation
      *
      * @param string|null $dest
      */
     public function checkout($dest = null)
     {
+        $temporary = $this->isTemporary;
+
         if (true === is_null($dest)) {
             $realdest = $this->cwd;
         } else {
@@ -45,13 +78,15 @@ class Git extends AbstractGit implements VcsInterface
         $head = $this->getHead();
         $branch = $head->getName();
 
-        $result = $this->execute('clone', array('-b' => (string) $branch, $this->url, $realdest));
-
-        $this->setCwd($realdest);
-
-        if (true === is_null($dest)) {
-            $this->isTemporary = true;
+        if (false === $this->hasClone || false === is_null($dest)) {
+            $this->cloneRepository($dest);
+        } else {
+            $result = $this->execute('checkout', array((string) $branch));
         }
+
+        $this->hasCheckout = true;
+
+        $result = $this->pull();
     }
 
     /**
@@ -130,11 +165,23 @@ class Git extends AbstractGit implements VcsInterface
         $head = $this->getHead();
         $branch = $head->getName();
 
-        $result = $this->execute('clone', array('-b' => (string) $branch, '--depth=1', $this->url, $dest));
+        if (!$this->hasCheckout) {
+//            if ($this->isTemporary) {
+//                // create a shallow checkout
+//                $result = $this->execute('clone', array('-b' => (string) $branch, '--depth=1', $this->url, $dest));
+//            } else {
+//                $this->checkout();
+//            }
+
+            $this->checkout();
+        }
+
+        // we already have cloned the repository, use that instead
+        $result = $this->execute('clone', array('-b' => (string) $branch, '--depth=1', 'file://' . $this->cwd, $dest), getcwd());
 
         $result = $this->adapter->execute('submodule', array('update', '--init' => true, '--recursive' => true), $dest);
 
-        $this->isTemporary = false;
+        //$this->isTemporary = false;
 
         $filesystem = new Filesystem();
         $filesystem->remove($dest . '/.git');
@@ -184,9 +231,7 @@ class Git extends AbstractGit implements VcsInterface
      */
     public function log($path, $revision = null, $limit = null)
     {
-        if (!$this->hasCheckout) {
-            $this->checkout();
-        }
+        $this->fetch();
 
         if ('' === $path) {
             $path = '.';
@@ -206,9 +251,7 @@ class Git extends AbstractGit implements VcsInterface
      */
     public function changelog($revision1, $revision2)
     {
-        if (!$this->hasCheckout) {
-            $this->checkout();
-        }
+        $this->fetch();
 
         return $this->execute('log', array(
                 '--pretty=' => self::PRETTY_FORMAT,
@@ -245,6 +288,8 @@ class Git extends AbstractGit implements VcsInterface
     public function diff($oldPath, $newPath, $oldRevision = 'HEAD',
         $newRevision = 'HEAD', $summary = true)
     {
+        $this->fetch();
+
         $arguments = array(
             '--name-status' => $summary,
             $oldRevision,
@@ -267,17 +312,21 @@ class Git extends AbstractGit implements VcsInterface
      */
     public function branches()
     {
-        $retval = $this->execute('ls-remote', array('--heads' => true, $this->getUrl()));
+        if (null === $this->branches) {
+            $retval = $this->execute('ls-remote', array('--heads' => true, $this->getUrl()));
 
-        $list = explode("\n", rtrim($retval));
+            $list = explode("\n", rtrim($retval));
 
-        $branches = array();
-        foreach ($list as $line) {
-            list ($hash, $ref) = explode("\t", $line);
-            $branches[] = new Reference(basename($ref), Reference::BRANCH, $hash);
+            $branches = array();
+            foreach ($list as $line) {
+                list ($hash, $ref) = explode("\t", $line);
+                $branches[] = new Reference(basename($ref), Reference::BRANCH, $hash);
+            }
+
+            $this->branches = $branches;
         }
 
-        return $branches;
+        return $this->branches;
     }
 
     /**
@@ -286,21 +335,25 @@ class Git extends AbstractGit implements VcsInterface
      */
     public function tags()
     {
-        $retval = $this->execute('ls-remote', array('--tags' => true, $this->getUrl()));
+        if (null === $this->tags) {
+            $retval = $this->execute('ls-remote', array('--tags' => true, $this->getUrl()));
 
-        if ('' === $retval) {
-            return array();
+            if ('' === $retval) {
+                return $this->tags = array();
+            }
+
+            $list = explode("\n", rtrim($retval));
+
+            $tags = array();
+            foreach ($list as $line) {
+                list ($hash, $ref) = explode("\t", $line);
+                $tags[] = new Reference(basename($ref), Reference::TAG, $hash);
+            }
+
+            $this->tags = $tags;
         }
 
-        $list = explode("\n", rtrim($retval));
-
-        $tags = array();
-        foreach ($list as $line) {
-            list ($hash, $ref) = explode("\t", $line);
-            $tags[] = new Reference(basename($ref), Reference::TAG, $hash);
-        }
-
-        return $tags;
+        return $this->tags;
     }
 
     /**
@@ -308,7 +361,7 @@ class Git extends AbstractGit implements VcsInterface
      *
      * @param  string $remote
      * @throws \RuntimeException
-     * @return string
+     * @return null|string
      */
     public function push($remote = 'origin')
     {
@@ -322,6 +375,8 @@ class Git extends AbstractGit implements VcsInterface
             // ignore output on stderr: it contains
             // progress information, for example about hooks
         }
+
+        return null;
     }
 
     /**
@@ -341,11 +396,41 @@ class Git extends AbstractGit implements VcsInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Webcreate\Vcs.VcsInterface::revisionCompare()
+     * Git fetch
+     *
+     * @param  string $remote
+     * @throws \RuntimeException
+     * @return bool
+     */
+    public function fetch($remote = null)
+    {
+        if ($this->isFetched) {
+            return false;
+        }
+
+        if (!$this->hasClone) {
+            $this->cloneRepository();
+        }
+
+        $args = array();
+        if (null !== $remote) {
+            $args[] = $remote;
+        }
+
+        $this->execute('fetch', $args);
+
+        $this->isFetched = true;
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function revisionCompare($revision1, $revision2)
     {
+        $this->fetch();
+
         if ($revision1 == $revision2) {
             return 0;
         } else {

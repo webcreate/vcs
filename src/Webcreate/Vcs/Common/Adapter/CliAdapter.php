@@ -30,21 +30,21 @@ class CliAdapter implements AdapterInterface
     /**
      * Commandline interface utility
      *
-     * @var Webcreate\Util\Cli
+     * @var \Webcreate\Util\Cli
      */
     protected $cli;
 
     /**
      * VCS client
      *
-     * @var Webcreate\Vcs\Common\AbstractClient
+     * @var \Webcreate\Vcs\Common\AbstractClient
      */
     protected $client;
 
     /**
      * Output parser
      *
-     * @var Webcreate\Vcs\Common\Parser\ParserInterface
+     * @var \Webcreate\Vcs\Common\Parser\ParserInterface
      */
     protected $parser;
 

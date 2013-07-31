@@ -11,7 +11,7 @@ use Webcreate\Vcs\Common\Commit;
 use Symfony\Component\Filesystem\Filesystem;
 use Webcreate\Vcs\Git;
 
-class GitTest extends PHPUnit_Framework_TestCase
+class GitTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -37,7 +37,7 @@ class GitTest extends PHPUnit_Framework_TestCase
         $tmpdir = $this->tmpdir;
 
         $this->cli
-            ->expects($this->any())
+            ->expects($this->at(0))
             ->method('execute')
             ->with($expected)
             ->will($this->returnCallback(function() use ($tmpdir) {
@@ -65,7 +65,7 @@ class GitTest extends PHPUnit_Framework_TestCase
         $tmpdir = $this->tmpdir;
 
         $this->cli
-            ->expects($this->once())
+            ->expects($this->at(0))
             ->method('execute')
             ->with(sprintf('%s clone -b \'%s\' \'%s\' \'%s\'', $this->bin, 'master', $this->url, $this->tmpdir))
             ->will($this->returnCallback(function() use ($tmpdir) {
@@ -92,9 +92,9 @@ class GitTest extends PHPUnit_Framework_TestCase
     {
         $this->git->setMethods(array('checkout'));
         $this->cli
-            ->expects($this->any())
+            ->expects($this->at(4))
             ->method('execute')
-            ->with($expected)
+            ->with($this->equalTo($expected))
         ;
 
         $result = $this->git->getMock()->log($path, $revision, $limit);
@@ -127,7 +127,7 @@ class GitTest extends PHPUnit_Framework_TestCase
         $tmpdir = $this->tmpdir;
 
         $this->cli
-            ->expects($this->once())
+            ->expects($this->at(0))
             ->method('execute')
             ->with(sprintf('%s clone -b \'%s\' \'%s\' \'%s\'', $this->bin, 'master', $this->url, $this->tmpdir))
             ->will($this->returnCallback(function() use ($tmpdir) {

@@ -52,6 +52,7 @@ class Pointer
     public function setType($type)
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -74,6 +75,7 @@ class Pointer
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 

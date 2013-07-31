@@ -26,14 +26,14 @@ abstract class AbstractClient
     /**
      * Adapter for VCS backend
      *
-     * @var Webcreate\Vcs\Common\Adapter\AdapterInterface
+     * @var \Webcreate\Vcs\Common\Adapter\AdapterInterface
      */
     protected $adapter;
 
     /**
      * Reference to current branch or tag
      *
-     * @var Webcreate\Vcs\Common\Reference
+     * @var \Webcreate\Vcs\Common\Reference
      */
     protected $head;
 
