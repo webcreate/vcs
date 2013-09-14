@@ -315,6 +315,10 @@ class Git extends AbstractGit implements VcsInterface
         if (null === $this->branches) {
             $retval = $this->execute('ls-remote', array('--heads' => true, $this->getUrl()));
 
+            if ('' === trim($retval)) {
+                return $this->branches = array();
+            }
+
             $list = explode("\n", rtrim($retval));
 
             $branches = array();
@@ -338,7 +342,7 @@ class Git extends AbstractGit implements VcsInterface
         if (null === $this->tags) {
             $retval = $this->execute('ls-remote', array('--tags' => true, $this->getUrl()));
 
-            if ('' === $retval) {
+            if ('' === trim($retval)) {
                 return $this->tags = array();
             }
 
