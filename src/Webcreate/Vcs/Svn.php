@@ -8,6 +8,7 @@
 namespace Webcreate\Vcs;
 
 use Webcreate\Vcs\Common\Reference;
+use Webcreate\Vcs\Common\VcsEvents;
 use Webcreate\Vcs\Svn\WorkingCopy;
 use Webcreate\Vcs\Common\Commit;
 use Webcreate\Vcs\Svn\AbstractSvn;
@@ -35,7 +36,11 @@ class Svn extends AbstractSvn implements VcsInterface
     {
         $this->wc = new WorkingCopy($this, $dest);
 
-        return $this->wc->checkout();
+        $this->dispatch(VcsEvents::PRE_CHECKOUT, array('dest' => $dest, 'head' => $this->getHead()->getName()));
+
+        $this->wc->checkout();
+
+        $this->dispatch(VcsEvents::POST_CHECKOUT);
     }
 
     /**
@@ -99,7 +104,13 @@ class Svn extends AbstractSvn implements VcsInterface
             $dest = $dest . '/' . basename($path);
         }
 
-        return $this->execute('export', array($this->getSvnUrl($path), $dest));
+        $this->dispatch(VcsEvents::PRE_EXPORT);
+
+        $result = $this->execute('export', array($this->getSvnUrl($path), $dest));
+
+        $this->dispatch(VcsEvents::POST_EXPORT);
+
+        return $result;
     }
 
     /**

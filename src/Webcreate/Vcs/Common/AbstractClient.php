@@ -7,7 +7,9 @@
 
 namespace Webcreate\Vcs\Common;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Webcreate\Vcs\Common\Adapter\AdapterInterface;
+use Webcreate\Vcs\Common\Events\VcsEvent;
 
 /**
  * Abstract base class for VCS clients.
@@ -29,6 +31,11 @@ abstract class AbstractClient
      * @var \Webcreate\Vcs\Common\Adapter\AdapterInterface
      */
     protected $adapter;
+
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    protected $dispatcher;
 
     /**
      * Reference to current branch or tag
@@ -72,6 +79,22 @@ abstract class AbstractClient
     public function getAdapter()
     {
         return $this->adapter;
+    }
+
+    /**
+     * @param mixed $dispatcher
+     */
+    public function setDispatcher(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
     }
 
     /**
@@ -123,5 +146,26 @@ abstract class AbstractClient
     public function getHead()
     {
         return $this->head;
+    }
+
+    /**
+     * Dispatches an event if the event dispatcher is available
+     *
+     * @param string $eventName
+     * @param array $data
+     */
+    public function dispatch($eventName, array $data = null)
+    {
+        if (!interface_exists('Symfony\Component\EventDispatcher\EventDispatcherInterface')) {
+            return;
+        }
+
+        if (null === $this->dispatcher) {
+            return;
+        }
+
+        $event = new VcsEvent($data);
+
+        $this->dispatcher->dispatch($eventName, $event);
     }
 }

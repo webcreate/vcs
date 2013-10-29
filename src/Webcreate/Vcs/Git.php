@@ -7,6 +7,7 @@
 
 namespace Webcreate\Vcs;
 
+use Webcreate\Vcs\Common\VcsEvents;
 use Webcreate\Vcs\Common\VcsFileInfo;
 use Webcreate\Vcs\Common\Reference;
 use Webcreate\Vcs\Common\Status;
@@ -78,6 +79,8 @@ class Git extends AbstractGit implements VcsInterface
         $head = $this->getHead();
         $branch = $head->getName();
 
+        $this->dispatch(VcsEvents::PRE_CHECKOUT, array('dest' => $realdest, 'head' => $head->getName()));
+
         if (false === $this->hasClone || false === is_null($dest)) {
             $this->cloneRepository($dest);
         } else {
@@ -87,6 +90,8 @@ class Git extends AbstractGit implements VcsInterface
         $this->hasCheckout = true;
 
         $result = $this->pull();
+
+        $this->dispatch(VcsEvents::POST_CHECKOUT);
     }
 
     /**
@@ -165,6 +170,8 @@ class Git extends AbstractGit implements VcsInterface
         $head = $this->getHead();
         $branch = $head->getName();
 
+        $this->dispatch(VcsEvents::PRE_EXPORT);
+
         if (!$this->hasCheckout) {
 //            if ($this->isTemporary) {
 //                // create a shallow checkout
@@ -185,6 +192,8 @@ class Git extends AbstractGit implements VcsInterface
 
         $filesystem = new Filesystem();
         $filesystem->remove($dest . '/.git');
+
+        $this->dispatch(VcsEvents::POST_EXPORT);
     }
 
     /**
@@ -413,7 +422,7 @@ class Git extends AbstractGit implements VcsInterface
         }
 
         if (!$this->hasClone) {
-            $this->cloneRepository();
+            $this->checkout();
         }
 
         $args = array();

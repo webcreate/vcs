@@ -22,5 +22,8 @@
         "symfony/finder": ">=v2.1.2",
         "symfony/filesystem": ">=v2.1.2",
         "webcreate/util": "1.*"
+    },
+    "suggest": {
+      "symfony/event-dispatcher": "Allows to hook into VCS with events"
     }
 }
