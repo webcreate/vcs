@@ -27,6 +27,10 @@ class SvnTest extends AbstractTest
 
         $bin = getenv('SVN_BIN') ? getenv('SVN_BIN') : '/usr/local/bin/svn';
 
+        if (!file_exists($bin)) {
+            $this->markTestSkipped(sprintf('SVN executable %s not found', $bin));
+        }
+
         $parser = new CliParser();
         $adapter = new CliAdapter($bin, new Cli(), $parser);
         $client = new Svn('file://' . $this->svndir, $adapter);

@@ -92,7 +92,7 @@ class GitTest extends \PHPUnit_Framework_TestCase
     {
         $this->git->setMethods(array('checkout'));
         $this->cli
-            ->expects($this->at(4))
+            ->expects($this->at(2))
             ->method('execute')
             ->with($this->equalTo($expected))
         ;

@@ -447,7 +447,7 @@ class Git extends AbstractGit implements VcsInterface
         if ($revision1 == $revision2) {
             return 0;
         } else {
-            $result = $this->execute('log', array('--pretty=' => 'oneline', sprintf('%s..%s', $revision1, $revision2)));
+            $result = (string) $this->execute('log', array('--pretty=' => 'oneline', sprintf('%s..%s', $revision1, $revision2)));
 
             if ('' === $result) {
                 return 1;

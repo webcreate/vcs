@@ -26,6 +26,10 @@ class GitTest extends AbstractTest
 
         $bin = getenv('GIT_BIN') ? getenv('GIT_BIN') : '/usr/local/bin/git';
 
+        if (!file_exists($bin)) {
+            $this->markTestSkipped(sprintf('GIT executable %s not found', $bin));
+        }
+
         $parser = new CliParser();
         $adapter = new CliAdapter($bin, new Cli(), $parser);
         $client = new Git('file:///' . $this->vcsdir, $adapter);
