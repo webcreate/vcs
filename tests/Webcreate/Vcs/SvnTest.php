@@ -10,6 +10,8 @@ use Webcreate\Vcs\Svn\Adapter\CliAdapter;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
+require_once __DIR__ . "/Test/Util/xsprintf.php";
+
 class SvnTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -36,7 +38,7 @@ class SvnTest extends PHPUnit_Framework_TestCase
 
         $dest = sys_get_temp_dir();
 
-        $expected = sprintf("%s checkout '%s' '%s' --non-interactive", $this->bin, $this->url . '/trunk', $dest);
+        $expected = xsprintf("%s checkout %xs %xs --non-interactive", $this->bin, $this->url . '/trunk', $dest);
 
         $this->cli
             ->expects($this->once())
@@ -100,7 +102,7 @@ class SvnTest extends PHPUnit_Framework_TestCase
 
         $path = '/path/to/test';
 
-        $expected = sprintf("%s list --xml '%s' --non-interactive --username 'user' --password 'userpass'", $this->bin, $this->url . '/trunk' . $path);
+        $expected = xsprintf("%s list --xml %xs --non-interactive --username %xs --password %xs", $this->bin, $this->url . '/trunk' . $path, 'user', 'userpass');
 
         $this->cli
             ->expects($this->once())
@@ -155,13 +157,13 @@ class SvnTest extends PHPUnit_Framework_TestCase
         $this->setUp();
 
         return array(
-            array('path/to/import', '/', 'Importing stuff', sprintf("%s import '%s' '%s' -m '%s' --non-interactive",
+            array('path/to/import', '/', 'Importing stuff', xsprintf("%s import %xs %xs -m %xs --non-interactive",
                     $this->bin,
                     'path/to/import',
                     $this->url . '/trunk',
                     'Importing stuff'
             )),
-            array('path/to/import', '', 'Importing stuff', sprintf("%s import '%s' '%s' -m '%s' --non-interactive",
+            array('path/to/import', '', 'Importing stuff', xsprintf("%s import %xs %xs -m %xs --non-interactive",
                     $this->bin,
                     'path/to/import',
                     $this->url . '/trunk',
@@ -224,7 +226,7 @@ class SvnTest extends PHPUnit_Framework_TestCase
                 $path = '/',
                 null,
                 null,
-                sprintf("%s log --xml '%s' --non-interactive --username '%s' --password '%s'",
+                xsprintf("%s log --xml %xs --non-interactive --username %xs --password %xs",
                         $this->bin,
                         $this->url . '/trunk',
                         $this->username,
@@ -235,8 +237,9 @@ class SvnTest extends PHPUnit_Framework_TestCase
                 $path = '',
                 '1234',
                 null,
-                sprintf("%s log -r '1234' --xml '%s' --non-interactive --username '%s' --password '%s'",
+                xsprintf("%s log -r %xs --xml %xs --non-interactive --username %xs --password %xs",
                         $this->bin,
+                        '1234',
                         $this->url . '/trunk',
                         $this->username,
                         $this->password
@@ -246,8 +249,10 @@ class SvnTest extends PHPUnit_Framework_TestCase
                 $path = '/test',
                 '1234',
                 2,
-                sprintf("%s log -r '1234' --limit '2' --xml '%s' --non-interactive --username '%s' --password '%s'",
+                xsprintf("%s log -r %xs --limit %xs --xml %xs --non-interactive --username %xs --password %xs",
                         $this->bin,
+                        '1234',
+                        '2',
                         $this->url . '/trunk' . $path,
                         $this->username,
                         $this->password
@@ -264,7 +269,7 @@ class SvnTest extends PHPUnit_Framework_TestCase
         ;
         $svn->setCredentials($this->username, $this->password);
 
-        $expected = sprintf("%s cat '%s' --non-interactive --username '%s' --password '%s'",
+        $expected = xsprintf("%s cat %xs --non-interactive --username %xs --password %xs",
                 $this->bin,
                 $this->url . '/trunk/test',
                 $this->username,
@@ -289,7 +294,7 @@ class SvnTest extends PHPUnit_Framework_TestCase
         ;
         $svn->setCredentials($this->username, $this->password);
 
-        $expected = sprintf("%s diff '%s' '%s' --summarize --xml --non-interactive --username '%s' --password '%s'",
+        $expected = xsprintf("%s diff %xs %xs --summarize --xml --non-interactive --username %xs --password %xs",
                 $this->bin,
                 $this->url . '/trunk@2',
                 $this->url . '/trunk@100',

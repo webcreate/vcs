@@ -11,6 +11,8 @@ use Webcreate\Vcs\Common\Commit;
 use Symfony\Component\Filesystem\Filesystem;
 use Webcreate\Vcs\Git;
 
+require_once __DIR__ . "/Test/Util/xsprintf.php";
+
 class GitTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -32,7 +34,7 @@ class GitTest extends \PHPUnit_Framework_TestCase
 
     public function testCheckoutCommandline()
     {
-        $expected = sprintf('%s clone -b \'%s\' \'%s\' \'%s\'', $this->bin, 'master', $this->url, $this->tmpdir);
+        $expected = xsprintf('%s clone -b %xs %xs %xs', $this->bin, 'master', $this->url, $this->tmpdir);
 
         $tmpdir = $this->tmpdir;
 
@@ -67,7 +69,7 @@ class GitTest extends \PHPUnit_Framework_TestCase
         $this->cli
             ->expects($this->at(0))
             ->method('execute')
-            ->with(sprintf('%s clone -b \'%s\' \'%s\' \'%s\'', $this->bin, 'master', $this->url, $this->tmpdir))
+            ->with(xsprintf('%s clone -b %xs %xs %xs', $this->bin, 'master', $this->url, $this->tmpdir))
             ->will($this->returnCallback(function() use ($tmpdir) {
                 $filesystem = new Filesystem();
                 $filesystem->mkdir($tmpdir);
@@ -105,12 +107,12 @@ class GitTest extends \PHPUnit_Framework_TestCase
         $this->setUp();
 
         return array(
-                array('/dir1', null, 10, sprintf('%s log -n \'10\' --pretty=\'%s\' \'%s\'',
+                array('/dir1', null, 10, xsprintf('%s log -n \'10\' --pretty=%xs %xs',
                         $this->bin,
                         Git::PRETTY_FORMAT,
                         '/dir1'
                 )),
-                array('/dir1', null, null, sprintf('%s log --pretty=\'%s\' \'%s\'',
+                array('/dir1', null, null, xsprintf('%s log --pretty=%xs %xs',
                         $this->bin,
                         Git::PRETTY_FORMAT,
                         '/dir1'
@@ -129,7 +131,7 @@ class GitTest extends \PHPUnit_Framework_TestCase
         $this->cli
             ->expects($this->at(0))
             ->method('execute')
-            ->with(sprintf('%s clone -b \'%s\' \'%s\' \'%s\'', $this->bin, 'master', $this->url, $this->tmpdir))
+            ->with(xsprintf('%s clone -b %xs %xs %xs', $this->bin, 'master', $this->url, $this->tmpdir))
             ->will($this->returnCallback(function() use ($tmpdir) {
                 $filesystem = new Filesystem();
                 $filesystem->mkdir($tmpdir);
@@ -172,5 +174,3 @@ class GitTest extends \PHPUnit_Framework_TestCase
         $filesystem->remove($this->tmpdir);
     }
 }
-
-
