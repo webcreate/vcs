@@ -86,6 +86,12 @@ abstract class AbstractGit extends AbstractClient
 
         if (is_null($cwd)) {
             $this->cwd = sys_get_temp_dir() . '/' . uniqid('git');
+
+            // ensure the working directory exists (needed on windows)
+            if (!is_dir($this->cwd)) {
+                mkdir($this->cwd);
+            }
+
             $this->isTemporary = true;
         } else {
             if (is_dir($cwd)) {
