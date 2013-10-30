@@ -17,7 +17,5 @@ function xsprintf()
 
     $format = str_replace('%xs', $quote . '%s' . $quote, $format);
 
-    array_unshift($args, $format);
-
-    return call_user_func_array('sprintf', $args);
+    return vsprintf($format, $args);
 }
