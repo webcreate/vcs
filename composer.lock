@@ -1,5 +1,9 @@
 {
-    "hash": "f975e25f415ac2ab819bb670bcf7cd08",
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "07674e05d4775c1f169a8c85db32422d",
     "packages": [
         {
             "name": "symfony/filesystem",
@@ -97,17 +101,17 @@
         },
         {
             "name": "symfony/process",
-            "version": "v2.2.1",
+            "version": "v2.3.6",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "v2.2.1"
+                "reference": "81191e354fe9dad0451036ccf0fdf283649d3f1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/v2.2.1",
-                "reference": "v2.2.1",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/81191e354fe9dad0451036ccf0fdf283649d3f1e",
+                "reference": "81191e354fe9dad0451036ccf0fdf283649d3f1e",
                 "shasum": ""
             },
             "require": {
@@ -116,7 +120,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -140,25 +144,25 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2013-03-23 07:49:54"
+            "time": "2013-10-09 21:17:57"
         },
         {
             "name": "webcreate/util",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webcreate/util.git",
-                "reference": "1.0.1"
+                "reference": "1cfed31017ee92e6db1b291699ef39eeabd3f82d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webcreate/util/zipball/1.0.1",
-                "reference": "1.0.1",
+                "url": "https://api.github.com/repos/webcreate/util/zipball/1cfed31017ee92e6db1b291699ef39eeabd3f82d",
+                "reference": "1cfed31017ee92e6db1b291699ef39eeabd3f82d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.1.2"
+                "symfony/process": "~2.3"
             },
             "type": "library",
             "autoload": {
@@ -182,7 +186,7 @@
             "keywords": [
                 "util"
             ],
-            "time": "2013-04-10 14:00:31"
+            "time": "2013-10-29 21:14:10"
         }
     ],
     "packages-dev": [

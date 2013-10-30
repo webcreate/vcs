@@ -18,7 +18,7 @@
         }
     },
     "require": {
-        "symfony/process": ">=v2.1.2",
+        "symfony/process": "~2.3",
         "symfony/finder": ">=v2.1.2",
         "symfony/filesystem": ">=v2.1.2",
         "webcreate/util": "1.*"
