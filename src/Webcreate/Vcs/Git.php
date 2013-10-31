@@ -79,7 +79,7 @@ class Git extends AbstractGit implements VcsInterface
         $head = $this->getHead();
         $branch = $head->getName();
 
-        $this->dispatch(VcsEvents::PRE_CHECKOUT, array('dest' => $realdest, 'head' => $head->getName()));
+        $this->dispatch(VcsEvents::PRE_CHECKOUT, array('dest' => $realdest, 'head' => $branch));
 
         if (false === $this->hasClone || false === is_null($dest)) {
             $this->cloneRepository($dest);
@@ -89,7 +89,7 @@ class Git extends AbstractGit implements VcsInterface
 
         $this->hasCheckout = true;
 
-        $result = $this->pull();
+        $result = $this->pull('origin', $branch);
 
         $this->dispatch(VcsEvents::POST_CHECKOUT);
     }
@@ -173,13 +173,6 @@ class Git extends AbstractGit implements VcsInterface
         $this->dispatch(VcsEvents::PRE_EXPORT);
 
         if (!$this->hasCheckout) {
-//            if ($this->isTemporary) {
-//                // create a shallow checkout
-//                $result = $this->execute('clone', array('-b' => (string) $branch, '--depth=1', $this->url, $dest));
-//            } else {
-//                $this->checkout();
-//            }
-
             $this->checkout();
         }
 
@@ -187,8 +180,6 @@ class Git extends AbstractGit implements VcsInterface
         $result = $this->execute('clone', array('-b' => (string) $branch, '--depth=1', 'file://' . $this->cwd, $dest), getcwd());
 
         $result = $this->adapter->execute('submodule', array('update', '--init' => true, '--recursive' => true), $dest);
-
-        //$this->isTemporary = false;
 
         $filesystem = new Filesystem();
         $filesystem->remove($dest . '/.git');
@@ -396,16 +387,17 @@ class Git extends AbstractGit implements VcsInterface
      * Git pull
      *
      * @param  string $remote
+     * @param  string $branch
      * @throws \RuntimeException
      * @return string
      */
-    public function pull($remote = 'origin')
+    public function pull($remote = 'origin', $branch = 'master')
     {
         if (!$this->hasCheckout) {
             throw new \RuntimeException('This operation requires an active checkout.');
         }
 
-        return $this->execute('pull', array($remote));
+        return $this->execute('pull', array($remote, $branch));
     }
 
     /**
