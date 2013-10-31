@@ -8,6 +8,8 @@
 use Webcreate\Util\Cli;
 use Webcreate\Vcs\Svn\Svnadmin;
 
+require_once __DIR__ . "/../Test/Util/xsprintf.php";
+
 class SvnadminTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -21,7 +23,7 @@ class SvnadminTest extends PHPUnit_Framework_TestCase
         $cli
             ->expects($this->once())
             ->method('execute')
-            ->with('/usr/local/bin/svnadmin create \''.$this->svndir.'/test_test\'')
+            ->with(xsprintf('/usr/local/bin/svnadmin create %xs', $this->svndir.'/test_test'))
             ->will($this->returnValue(0))
         ;
 
