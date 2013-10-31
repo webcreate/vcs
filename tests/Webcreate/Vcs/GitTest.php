@@ -9,6 +9,7 @@ use Webcreate\Vcs\Common\VcsFileInfo;
 use Webcreate\Vcs\Common\Reference;
 use Webcreate\Vcs\Common\Commit;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\ProcessUtils;
 use Webcreate\Vcs\Git;
 
 require_once __DIR__ . "/Test/Util/xsprintf.php";
@@ -107,14 +108,15 @@ class GitTest extends \PHPUnit_Framework_TestCase
         $this->setUp();
 
         return array(
-                array('/dir1', null, 10, xsprintf('%s log -n \'10\' --pretty=%xs %xs',
+                array('/dir1', null, 10, xsprintf('%s log -n %xs --pretty=%s %xs',
                         $this->bin,
-                        Git::PRETTY_FORMAT,
+                        '10',
+                        ProcessUtils::escapeArgument(Git::PRETTY_FORMAT),
                         '/dir1'
                 )),
-                array('/dir1', null, null, xsprintf('%s log --pretty=%xs %xs',
+                array('/dir1', null, null, xsprintf('%s log --pretty=%s %xs',
                         $this->bin,
-                        Git::PRETTY_FORMAT,
+                        ProcessUtils::escapeArgument(Git::PRETTY_FORMAT),
                         '/dir1'
                 )),
         );
