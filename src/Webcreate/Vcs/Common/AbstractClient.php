@@ -9,7 +9,7 @@ namespace Webcreate\Vcs\Common;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Webcreate\Vcs\Common\Adapter\AdapterInterface;
-use Webcreate\Vcs\Common\Events\VcsEvent;
+use Webcreate\Vcs\Common\Event\VcsEvent;
 
 /**
  * Abstract base class for VCS clients.
@@ -152,9 +152,9 @@ abstract class AbstractClient
      * Dispatches an event if the event dispatcher is available
      *
      * @param string $eventName
-     * @param array $data
+     * @param mixed $data
      */
-    public function dispatch($eventName, array $data = null)
+    public function dispatch($eventName, $data = null)
     {
         if (!interface_exists('Symfony\Component\EventDispatcher\EventDispatcherInterface')) {
             return;

@@ -7,6 +7,8 @@
 
 namespace Webcreate\Vcs;
 
+use Webcreate\Vcs\Common\Event\Data\CheckoutEventData;
+use Webcreate\Vcs\Common\Event\Data\ExportEventData;
 use Webcreate\Vcs\Common\VcsEvents;
 use Webcreate\Vcs\Common\VcsFileInfo;
 use Webcreate\Vcs\Common\Reference;
@@ -79,7 +81,7 @@ class Git extends AbstractGit implements VcsInterface
         $head = $this->getHead();
         $branch = $head->getName();
 
-        $this->dispatch(VcsEvents::PRE_CHECKOUT, array('dest' => $realdest, 'head' => $branch));
+        $this->dispatch(VcsEvents::PRE_CHECKOUT, new CheckoutEventData($head, $realdest));
 
         if (false === $this->hasClone || false === is_null($dest)) {
             $this->cloneRepository($dest);
@@ -91,7 +93,7 @@ class Git extends AbstractGit implements VcsInterface
 
         $result = $this->pull('origin', $branch);
 
-        $this->dispatch(VcsEvents::POST_CHECKOUT);
+        $this->dispatch(VcsEvents::POST_CHECKOUT, new CheckoutEventData($head, $realdest));
     }
 
     /**
@@ -170,7 +172,7 @@ class Git extends AbstractGit implements VcsInterface
         $head = $this->getHead();
         $branch = $head->getName();
 
-        $this->dispatch(VcsEvents::PRE_EXPORT);
+        $this->dispatch(VcsEvents::PRE_EXPORT, new ExportEventData($head, $path, $dest));
 
         if (!$this->hasCheckout) {
             $this->checkout();
@@ -184,7 +186,7 @@ class Git extends AbstractGit implements VcsInterface
         $filesystem = new Filesystem();
         $filesystem->remove($dest . '/.git');
 
-        $this->dispatch(VcsEvents::POST_EXPORT);
+        $this->dispatch(VcsEvents::POST_EXPORT, new ExportEventData($head, $path, $dest));
     }
 
     /**

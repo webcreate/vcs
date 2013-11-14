@@ -5,7 +5,7 @@
  * @copyright Webcreate (http://webcreate.nl)
  */
 
-namespace Webcreate\Vcs\Common\Events;
+namespace Webcreate\Vcs\Common\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
@@ -16,7 +16,7 @@ class VcsEvent extends Event
 {
     protected $data;
 
-    public function __construct(array $data = null)
+    public function __construct($data = null)
     {
         $this->data = $data;
     }
