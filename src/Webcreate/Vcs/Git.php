@@ -86,6 +86,8 @@ class Git extends AbstractGit implements VcsInterface
         if (false === $this->hasClone || false === is_null($dest)) {
             $this->cloneRepository($dest);
         } else {
+            $this->fetch();
+
             $result = $this->execute('checkout', array((string) $branch));
         }
 
