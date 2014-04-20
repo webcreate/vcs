@@ -328,7 +328,7 @@ class Git extends AbstractGit implements VcsInterface
             $branches = array();
             foreach ($list as $line) {
                 list ($hash, $ref) = explode("\t", $line);
-                $branches[] = new Reference(basename($ref), Reference::BRANCH, $hash);
+                $branches[] = new Reference(str_replace('refs/heads/', '', $ref), Reference::BRANCH, $hash);
             }
 
             $this->branches = $branches;
@@ -355,7 +355,7 @@ class Git extends AbstractGit implements VcsInterface
             $tags = array();
             foreach ($list as $line) {
                 list ($hash, $ref) = explode("\t", $line);
-                $tags[] = new Reference(basename($ref), Reference::TAG, $hash);
+                $tags[] = new Reference(str_replace('refs/tags/', '', $ref), Reference::TAG, $hash);
             }
 
             $this->tags = $tags;
