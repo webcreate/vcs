@@ -215,7 +215,7 @@ abstract class AbstractSvn extends AbstractClient
         }
 
         $retval = $this->url;
-        if ($basePath) {
+        if (isset($basePath)) {
             $retval.= '/' . $basePath;
         }
 
