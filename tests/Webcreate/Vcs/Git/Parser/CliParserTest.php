@@ -28,8 +28,11 @@ class CliParserTest extends \PHPUnit_Framework_TestCase
     {
         $diffOutput = <<<EOT
 A       tests/Webcreate/Vcs/Git/Parser/CliParserTest.php
-R       Webcreate/Vcs/Svn/WorkingCopy.php
-R062    Webcreate/Vcs/Svn/SvnAdmin.php
+R       Webcreate/Vcs/Svn/WorkingRename.php
+R062    Webcreate/Vcs/Svn/WorkingCopy.php    Webcreate/Vcs/Svn/WorkingRename.php
+D       Webcreate/Vcs/Svn/AbstractSvn.php
+M       Webcreate/Vcs/Svn.php
+M001    Webcreate/Vcs/Svn.php
 EOT;
 
         $parsedDiff = $this->parser->parseDiffOutput(
@@ -43,10 +46,22 @@ EOT;
 
         $fileInfo = next($parsedDiff);
         $this->assertSame('R', $fileInfo->getStatus());
-        $this->assertSame('Webcreate/Vcs/Svn/WorkingCopy.php', $fileInfo->getPathname());
+        $this->assertSame('Webcreate/Vcs/Svn/WorkingRename.php', $fileInfo->getPathname());
 
         $fileInfo = next($parsedDiff);
         $this->assertSame('R', $fileInfo->getStatus());
-        $this->assertSame('Webcreate/Vcs/Svn/SvnAdmin.php', $fileInfo->getPathname());
+        $this->assertSame('Webcreate/Vcs/Svn/WorkingRename.php', $fileInfo->getPathname());
+
+        $fileInfo = next($parsedDiff);
+        $this->assertSame('D', $fileInfo->getStatus());
+        $this->assertSame('Webcreate/Vcs/Svn/AbstractSvn.php', $fileInfo->getPathname());
+
+        $fileInfo = next($parsedDiff);
+        $this->assertSame('M', $fileInfo->getStatus());
+        $this->assertSame('Webcreate/Vcs/Svn.php', $fileInfo->getPathname());
+
+        $fileInfo = next($parsedDiff);
+        $this->assertSame('M', $fileInfo->getStatus());
+        $this->assertSame('Webcreate/Vcs/Svn.php', $fileInfo->getPathname());
     }
 }
