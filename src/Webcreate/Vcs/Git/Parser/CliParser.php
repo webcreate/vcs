@@ -155,11 +155,15 @@ class CliParser implements ParserInterface
 
         $retval = array();
         foreach ($lines as $line) {
-            if (preg_match('/([ACDMRTUXB])\d*\s+(.*)?/', $line, $matches)) {
-                list($fullmatch, $x, $file) = $matches;
+            if (preg_match('/([ACDMRTUXB])(\d*)\s+(.*)?/', $line, $matches)) {
+                list($fullmatch, $status, $number, $filename) = $matches;
 
-                $file = new VcsFileInfo($file, $this->getClient()->getHead());
-                $file->setStatus($x);
+                if ($number && preg_match('/(.*\s)+(.*)/', $filename, $filenameMatches)) {
+                    list($fullmatch, $originalName, $filename) = $filenameMatches;
+                }
+
+                $file = new VcsFileInfo($filename, $this->getClient()->getHead());
+                $file->setStatus($status);
 
                 $retval[] = $file;
             } else {
