@@ -111,12 +111,12 @@ class GitTest extends \PHPUnit_Framework_TestCase
                 array('/dir1', null, 10, xsprintf('%s log -n %xs --pretty=%s %xs',
                         $this->bin,
                         '10',
-                        ProcessUtils::escapeArgument(Git::PRETTY_FORMAT),
+                        escapeshellarg(Git::PRETTY_FORMAT),
                         '/dir1'
                 )),
                 array('/dir1', null, null, xsprintf('%s log --pretty=%s %xs',
                         $this->bin,
-                        ProcessUtils::escapeArgument(Git::PRETTY_FORMAT),
+                        escapeshellarg(Git::PRETTY_FORMAT),
                         '/dir1'
                 )),
         );

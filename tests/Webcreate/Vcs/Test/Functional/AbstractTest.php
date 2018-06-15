@@ -58,7 +58,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Webcreate\Vcs\Exception\NotFoundException
+     * @expectedException \Webcreate\Vcs\Exception\NotFoundException
      */
     public function testLsForNonExistingPathThrowsException()
     {
@@ -139,7 +139,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Webcreate\Vcs\Exception\NotFoundException
+     * @expectedException \Webcreate\Vcs\Exception\NotFoundException
      */
     public function testCatForNonExistingPathThrowsException()
     {
@@ -184,7 +184,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
         $this->client->add(basename($tmpfile));
 
-        $result = $this->client->status('');
+        $result = $this->client->status();
 
         $file = new VcsFileInfo(basename($tmpfile), $this->client->getHead());
         $file->setStatus(Status::ADDED);
