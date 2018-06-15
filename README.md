@@ -3,7 +3,7 @@
 Webcreate\Vcs is an interface for PHP for working with various
 version control systems, like SVN, GIT, etc.
 
-This library was created as part of [Conveyor](http://conveyordeploy.com).
+This library was created as part of [Conveyor](https://github.com/webcreate/conveyor).
 
 [![Build Status](https://secure.travis-ci.org/webcreate/vcs.png?branch=master)](https://travis-ci.org/webcreate/vcs)
 
