@@ -164,10 +164,10 @@ abstract class AbstractSvn extends AbstractClient
             $result = $this->adapter->execute($command, $arguments, $cwd);
         } catch (\Exception $e) {
             // @todo move to a generic error handler? Something similar to the ParserInterface
-            if (preg_match('/svn: URL \'[^\']+\' non-existent in that revision/', $e->getMessage())) {
-                throw new NotFoundException($e->getMessage());
-            }
-            if (preg_match('/svn: File not found/', $e->getMessage())) {
+            if (preg_match('/url \'[^\']+\' non-existent/i', $e->getMessage()) ||
+                preg_match('/file not found/i', $e->getMessage()) ||
+                preg_match('/path not found/i', $e->getMessage())
+            ) {
                 throw new NotFoundException($e->getMessage());
             }
 
