@@ -18,10 +18,13 @@
         }
     },
     "require": {
-        "symfony/process": "~2.3|~3.0",
-        "symfony/finder": ">=v2.1.2|~3.0",
-        "symfony/filesystem": ">=v2.1.2|~3.0",
+        "symfony/process": "~2.3|~3.0|~4.0",
+        "symfony/finder": ">=v2.1.2 <3.0|~3.0|~4.0",
+        "symfony/filesystem": ">=v2.1.2 <3.0|~3.0|~4.0",
         "webcreate/util": "1.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.0"
     },
     "suggest": {
       "symfony/event-dispatcher": "Allows to hook into VCS with events"
